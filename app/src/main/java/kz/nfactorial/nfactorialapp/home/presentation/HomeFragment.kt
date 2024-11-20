@@ -13,18 +13,19 @@ import kz.nfactorial.nfactorialapp.ui.theme.AppTheme
 
 class HomeFragment: Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
         val navController = findNavController()
-        return ComposeView(requireContext()).apply {
-            layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            setContent {
-                AppTheme {
-                    HomeScreen(
-                        onStoreClick = { store ->
-                            navController.navigate(HomeFragmentDirections.actionHomeToStore(store))
-                        }
-                    )
-                }
+        setContent {
+            AppTheme {
+                HomeScreen(
+                    onStoreClick = { store ->
+                        navController.navigate(HomeFragmentDirections.actionHomeToStore(store))
+                    }
+                )
             }
         }
     }
