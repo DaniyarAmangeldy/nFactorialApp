@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">nFactorialApp</string>
+
+    <string name="home_header_good_morning">Good Morning,</string>
+    <string name="home_search_placeholder">Search products</string>
+
+    <string name="action_see_all">See all</string>
+
+    <string name="store_details_rating_fmt">%1$s (%2$s Reviews)</string>
 </resources>
