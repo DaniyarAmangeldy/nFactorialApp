@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_graph"
+    app:startDestination="@id/home"
+    >
+
+    <fragment
+        android:id="@+id/home"
+        android:name="kz.nfactorial.nfactorialapp.home.presentation.HomeFragment"
+    >
+        <action
+            android:id="@+id/action_home_to_store"
+            app:destination="@+id/store"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/store"
+        android:name="kz.nfactorial.nfactorialapp.store.presentation.StoreFragment">
+
+        <argument
+            android:name="store"
+            app:argType="kz.nfactorial.nfactorialapp.home.presentation.models.Store" />
+    </fragment>
+
+</navigation>
