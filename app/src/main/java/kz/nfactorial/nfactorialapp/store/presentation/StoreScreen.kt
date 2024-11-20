@@ -39,9 +39,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.IntExtensions.toShortString
-import kz.nfactorial.nfactorialapp.home.presentation.Product
-import kz.nfactorial.nfactorialapp.home.presentation.Store
-import kz.nfactorial.nfactorialapp.home.presentation.displayText
+import kz.nfactorial.nfactorialapp.home.presentation.models.Product
+import kz.nfactorial.nfactorialapp.home.presentation.models.Store
+import kz.nfactorial.nfactorialapp.home.presentation.models.displayText
 import kz.nfactorial.nfactorialapp.ui.theme.LocalColors
 import kz.nfactorial.nfactorialapp.ui.theme.LocalTypography
 

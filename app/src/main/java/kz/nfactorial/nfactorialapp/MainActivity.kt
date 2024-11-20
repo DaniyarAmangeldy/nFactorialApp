@@ -17,11 +17,16 @@ class MainActivity : ComponentActivity() {
             AppTheme {
                 HomeScreen(
                     onStoreClick = { store ->
-                        startActivity(
-                            Intent(this, StoreDetailsActivity::class.java).apply {
-                                putExtra("extra_store", store)
-                            }
-                        )
+                        // Navigate to Store Details
+                        val intent = Intent(this, StoreDetailsActivity::class.java).apply {
+                            putExtra("extra_store", store)
+                        }
+                        // Intent to Instagram
+//                        val intent = Intent(
+//                            Intent.ACTION_VIEW,
+//                            Uri.parse("geo:43.238949, 76.889709")
+//                        )
+                        startActivity(intent)
                     }
                 )
             }

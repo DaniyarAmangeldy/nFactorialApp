@@ -49,6 +49,13 @@ import androidx.compose.ui.unit.dp
 import kotlinx.parcelize.Parcelize
 import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
+import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
+import kz.nfactorial.nfactorialapp.home.presentation.models.Collection
+import kz.nfactorial.nfactorialapp.home.presentation.models.Price
+import kz.nfactorial.nfactorialapp.home.presentation.models.Product
+import kz.nfactorial.nfactorialapp.home.presentation.models.Rating
+import kz.nfactorial.nfactorialapp.home.presentation.models.Store
+import kz.nfactorial.nfactorialapp.home.presentation.models.displayText
 import kz.nfactorial.nfactorialapp.ui.theme.LocalColors
 import kz.nfactorial.nfactorialapp.ui.theme.LocalTypography
 
@@ -399,7 +406,6 @@ private fun Stores(
                             image = R.drawable.shoes_7,
                             price = Price(100, "$"),
                         ),
-
                     )
                 ),
                 Store(
@@ -476,47 +482,3 @@ private fun Stores(
         }
     }
 }
-
-data class ChipItem(
-    val id: Int,
-    val name: String,
-)
-
-data class Collection(
-    val products: List<Product>,
-)
-
-@Parcelize
-data class Product(
-    val name: String,
-    val price: Price,
-    val id: Int,
-    @DrawableRes
-    val image: Int,
-) : Parcelable
-
-@Parcelize
-data class Price(
-    val value: Int,
-    val currency: String,
-) : Parcelable
-
-@Parcelize
-data class Store(
-    val id: Int,
-    val name: String,
-    @DrawableRes
-    val image: Int,
-    val rating: Rating,
-    val products: List<Product> = emptyList(),
-) : Parcelable
-
-@Parcelize
-data class Rating(
-    val average: Float,
-    val count: Int,
-) : Parcelable
-
-val Price.displayText: String
-    get() = "${currency}$value"
-
