@@ -46,6 +46,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
+import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
+import kz.nfactorial.nfactorialapp.home.presentation.models.Banner
 import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
 import kz.nfactorial.nfactorialapp.home.presentation.models.Collection
 import kz.nfactorial.nfactorialapp.home.presentation.models.Price
@@ -57,39 +59,56 @@ import kz.nfactorial.nfactorialapp.ui.theme.LocalColors
 import kz.nfactorial.nfactorialapp.ui.theme.LocalTypography
 
 @Composable
-fun HomeScreen(onStoreClick: (Store) -> Unit) {
+fun HomeScreen(
+    state: HomeState,
+    onEvent: (HomeEvent) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .safeDrawingPadding(),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        item(key = "Header") { Header() }
+        item(key = "Header") { Header(state.account) }
         item(key = "SearchBar") {
             SearchBar(
-                modifier = Modifier.padding(top = 16.dp)
+                text = state.searchField,
+                modifier = Modifier.padding(top = 16.dp),
+                onEvent = onEvent,
             )
         }
         item(key = "BannerItem") {
-            BannerItem(modifier = Modifier.padding(top = 16.dp))
+            BannerItem(
+                banner = state.banner,
+                modifier = Modifier.padding(top = 16.dp),
+            )
         }
         item(key = "FilterChips") {
-            FilterChips(modifier = Modifier.padding(top = 16.dp))
+            FilterChips(
+                filters = state.filters,
+                selectedIds = state.selectedFilterIds,
+                modifier = Modifier.padding(top = 16.dp),
+                onEvent = onEvent,
+            )
         }
-        item(key = "Products") {
-            ProductCollections(modifier = Modifier.padding(top = 16.dp))
+        items(state.collections, key = { it.name }) { collection ->
+            ProductCollections(
+                collection = collection,
+                modifier = Modifier.padding(top = 16.dp),
+            )
         }
         item(key = "Stores") {
             Stores(
+                stores = state.stores,
+                onEvent = onEvent,
                 modifier = Modifier.padding(top = 16.dp),
-                onClick = onStoreClick,
             )
         }
     }
 }
 
 @Composable
-private fun Header() {
+private fun Header(accountInfo: AccountInfo) {
     Row(
         modifier = Modifier
             .padding(horizontal = 30.dp)
@@ -103,7 +122,7 @@ private fun Header() {
                 style = LocalTypography.current.medium.medium300,
             )
             Text(
-                text = "Daniyar Amangeldy",
+                text = accountInfo.fullName,
                 style = LocalTypography.current.semibold.semibold400,
             )
         }
@@ -121,7 +140,7 @@ private fun Header() {
         ) {
             Image(
                 modifier = Modifier.size(24.dp),
-                painter = painterResource(R.drawable.ic_spiderman),
+                painter = painterResource(accountInfo.image),
                 contentDescription = "profile",
             )
         }
@@ -129,19 +148,22 @@ private fun Header() {
 }
 
 @Composable
-private fun SearchBar(modifier: Modifier = Modifier) {
+private fun SearchBar(
+    text: String,
+    modifier: Modifier = Modifier,
+    onEvent: (HomeEvent) -> Unit,
+) {
     Box(
         modifier = modifier
             .padding(horizontal = 30.dp, vertical = 10.dp)
             .height(53.dp)
     ) {
-        var value by remember { mutableStateOf("") }
         TextField(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(remember { RoundedCornerShape(8.dp) }),
-            value = value,
-            onValueChange = { value = it },
+            value = text,
+            onValueChange = { onEvent(HomeEvent.OnSearchChanged(it)) },
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = LocalColors.current.back.base,
                 focusedContainerColor = LocalColors.current.back.base,
@@ -171,7 +193,10 @@ private fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun BannerItem(modifier: Modifier = Modifier) {
+private fun BannerItem(
+    banner: Banner,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .padding(horizontal = 30.dp)
@@ -181,7 +206,7 @@ private fun BannerItem(modifier: Modifier = Modifier) {
     ) {
         Image(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(R.drawable.nike_banner),
+            painter = painterResource(banner.image),
             contentDescription = "banner_image",
             contentScale = ContentScale.FillWidth,
         )
@@ -198,12 +223,12 @@ private fun BannerItem(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "It's Time for\nPayday Sale!",
+                text = banner.title,
                 color = LocalColors.current.text.primaryInverse,
                 style = LocalTypography.current.bold.bold700,
             )
             Text(
-                text = "Up to 70% off!",
+                text = banner.description,
                 color = LocalColors.current.text.primaryInverse,
                 style = LocalTypography.current.medium.medium400,
             )
@@ -212,22 +237,12 @@ private fun BannerItem(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun FilterChips(modifier: Modifier = Modifier) {
-    val filters = remember {
-        listOf(
-            ChipItem(1, "Sandals"),
-            ChipItem(2, "Heels"),
-            ChipItem(3, "Shoes"),
-            ChipItem(4, "Slippers"),
-            ChipItem(5, "Boots"),
-            ChipItem(6, "Sneakers"),
-            ChipItem(7, "Loafers"),
-            ChipItem(8, "Oxfords"),
-            ChipItem(9, "Moccasins"),
-            ChipItem(10, "Flip-flops"),
-        )
-    }
-    var selectedIds by remember { mutableStateOf<Set<Int>>(emptySet()) }
+private fun FilterChips(
+    filters: List<ChipItem>,
+    selectedIds: Set<Int>,
+    onEvent: (HomeEvent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     LazyRow(
         modifier = modifier
             .fillMaxWidth()
@@ -235,13 +250,13 @@ private fun FilterChips(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         contentPadding = PaddingValues(horizontal = 30.dp)
     ) {
-        items(filters) { (id, name) ->
+        items(filters) { item ->
             FilterChip(
-                selected = id in selectedIds,
-                onClick = { selectedIds = selectedIds.addOrRemove(id) },
+                selected = item.id in selectedIds,
+                onClick = { onEvent(HomeEvent.OnFilterClick(item)) },
                 label = {
                     Text(
-                        text = name,
+                        text = item.name,
                         style = LocalTypography.current.medium.medium300,
                     )
                 },
@@ -258,41 +273,14 @@ private fun FilterChips(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ProductCollections(modifier: Modifier = Modifier) {
+private fun ProductCollections(
+    collection: Collection,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        val collections = remember {
-            Collection(
-                products = listOf(
-                    Product(
-                        name = "Founds",
-                        id = 1,
-                        image = R.drawable.founds,
-                        price = Price(45, "$"),
-                    ),
-                    Product(
-                        name = "Demix",
-                        id = 2,
-                        image = R.drawable.demix,
-                        price = Price(40, "$"),
-                    ),
-                    Product(
-                        name = "Dino Ricci",
-                        id = 3,
-                        image = R.drawable.dino_ricci,
-                        price = Price(38, "$"),
-                    ),
-                    Product(
-                        name = "Adidas Originals",
-                        id = 4,
-                        image = R.drawable.adidas_originals,
-                        price = Price(100, "$"),
-                    )
-                )
-            )
-        }
         Row(
             modifier = Modifier
                 .padding(horizontal = 30.dp)
@@ -301,7 +289,7 @@ private fun ProductCollections(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Trending Products",
+                text = collection.name,
                 color = LocalColors.current.text.primary,
                 style = LocalTypography.current.bold.bold600,
             )
@@ -316,7 +304,7 @@ private fun ProductCollections(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(horizontal = 30.dp)
         ) {
-            items(collections.products) { product ->
+            items(collection.products) { product ->
                 Box(
                     modifier = Modifier
                         .size(120.dp, 160.dp)
@@ -358,67 +346,14 @@ private fun ProductCollections(modifier: Modifier = Modifier) {
 
 @Composable
 private fun Stores(
+    stores: List<Store>,
     modifier: Modifier = Modifier,
-    onClick: (Store) -> Unit,
+    onEvent: (HomeEvent) -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        val stores = remember {
-            listOf(
-                Store(
-                    id = 0,
-                    name = "Lamoda",
-                    image = R.drawable.store_lamoda,
-                    rating = Rating(4.7f, 2300),
-                ),
-                Store(
-                    id = 1,
-                    name = "Zara",
-                    image = R.drawable.store_zara,
-                    rating = Rating(4.4f, 21200),
-                    products = listOf(
-                        Product(
-                            name = "Founds",
-                            id = 1,
-                            image = R.drawable.shoes_1,
-                            price = Price(45, "$"),
-                        ),
-                        Product(
-                            name = "Demix",
-                            id = 2,
-                            image = R.drawable.shoes_5,
-                            price = Price(40, "$"),
-                        ),
-                        Product(
-                            name = "Dino Ricci",
-                            id = 3,
-                            image = R.drawable.shoes_6,
-                            price = Price(38, "$"),
-                        ),
-                        Product(
-                            name = "Adidas Originals",
-                            id = 4,
-                            image = R.drawable.shoes_7,
-                            price = Price(100, "$"),
-                        ),
-                    )
-                ),
-                Store(
-                    id = 2,
-                    name = "Intertop",
-                    image = R.drawable.store_intertop,
-                    rating = Rating(3.4f, 500),
-                ),
-                Store(
-                    id = 3,
-                    name = "Adidas",
-                    image = R.drawable.store_adidas,
-                    rating = Rating(5.0f, 23000),
-                )
-            )
-        }
         Row(
             modifier = Modifier
                 .padding(horizontal = 30.dp)
@@ -450,7 +385,7 @@ private fun Stores(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = ripple(),
-                            onClick = { onClick(store) }
+                            onClick = { onEvent(HomeEvent.OnStoreClick(store)) }
                         )
                 ) {
                     Image(
