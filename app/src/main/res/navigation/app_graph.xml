@@ -13,6 +13,11 @@
             android:id="@+id/action_home_to_store"
             app:destination="@+id/store"
             />
+
+        <action
+            android:id="@+id/action_home_to_registration"
+            app:destination="@+id/registration"
+            />
     </fragment>
 
     <fragment
@@ -23,5 +28,9 @@
             android:name="store"
             app:argType="kz.nfactorial.nfactorialapp.home.presentation.models.Store" />
     </fragment>
+
+    <fragment
+        android:id="@+id/registration"
+        android:name="kz.nfactorial.nfactorialapp.registration.presentation.RegistrationFragment"/>
 
 </navigation>

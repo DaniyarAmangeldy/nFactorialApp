@@ -7,4 +7,8 @@
     <string name="action_see_all">See all</string>
 
     <string name="store_details_rating_fmt">%1$s (%2$s Reviews)</string>
+
+    <string name="update_your_profile">Update profile</string>
+    <string name="name_field_placeholder">Name</string>
+    <string name="size_field_placeholder">Size</string>
 </resources>

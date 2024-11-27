@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
+import kz.nfactorial.nfactorialapp.room.DatabaseHolder
 
 class MainActivity : FragmentActivity(R.layout.main_activity) {
 

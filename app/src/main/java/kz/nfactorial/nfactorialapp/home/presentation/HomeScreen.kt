@@ -69,7 +69,8 @@ fun HomeScreen(
             .safeDrawingPadding(),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        item(key = "Header") { Header(state.account) }
+
+        item(key = "Header") { Header(state.account, onEvent) }
         item(key = "SearchBar") {
             SearchBar(
                 text = state.searchField,
@@ -108,7 +109,10 @@ fun HomeScreen(
 }
 
 @Composable
-private fun Header(accountInfo: AccountInfo) {
+private fun Header(
+    accountInfo: AccountInfo?,
+    onEvent: (HomeEvent) -> Unit
+) {
     Row(
         modifier = Modifier
             .padding(horizontal = 30.dp)
@@ -116,13 +120,20 @@ private fun Header(accountInfo: AccountInfo) {
             .height(48.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column {
+        Column(
+            modifier = Modifier
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(),
+                    onClick = { onEvent(HomeEvent.OnRegistrationClick) },
+                )
+        ) {
             Text(
                 text = stringResource(R.string.home_header_good_morning),
                 style = LocalTypography.current.medium.medium300,
             )
             Text(
-                text = accountInfo.fullName,
+                text = accountInfo?.fullName ?: stringResource(R.string.update_your_profile),
                 style = LocalTypography.current.semibold.semibold400,
             )
         }
@@ -140,7 +151,7 @@ private fun Header(accountInfo: AccountInfo) {
         ) {
             Image(
                 modifier = Modifier.size(24.dp),
-                painter = painterResource(accountInfo.image),
+                painter = painterResource(accountInfo?.image ?: R.drawable.baseline_person_24),
                 contentDescription = "profile",
             )
         }

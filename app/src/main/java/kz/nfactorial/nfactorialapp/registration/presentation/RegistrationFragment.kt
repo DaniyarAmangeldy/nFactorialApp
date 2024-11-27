@@ -1,8 +1,7 @@
-package kz.nfactorial.nfactorialapp.home.presentation
+package kz.nfactorial.nfactorialapp.registration.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -10,34 +9,29 @@ import androidx.navigation.fragment.findNavController
 import kz.nfactorial.nfactorialapp.extensions.viewModels
 import kz.nfactorial.nfactorialapp.home.data.account.RoomAccountProvider
 import kz.nfactorial.nfactorialapp.home.data.account.SharedPreferencesAccountProvider
+import kz.nfactorial.nfactorialapp.room.DatabaseHolder
 import kz.nfactorial.nfactorialapp.ui.theme.AppTheme
 
-class HomeFragment: Fragment() {
+class RegistrationFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by viewModels(
+    private val viewModel: RegistrationViewModel by viewModels(
         viewModelInitializer = {
-            HomeViewModel(accountProvider = RoomAccountProvider(requireContext()))
+            RegistrationViewModel(accountProvider = RoomAccountProvider(requireContext()))
         }
     )
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = ComposeView(requireContext()).apply {
-        val navController = findNavController()
+        savedInstanceState: Bundle?,
+    ) = ComposeView(requireContext()).apply {
         setContent {
             AppTheme {
-                HomeScreen(
-                    state = viewModel.homeState,
-                    onEvent = { event -> viewModel.dispatch(event, navController) }
+                RegistrationScreen(
+                    state = viewModel.state,
+                    onEvent = { event -> viewModel.dispatch(event, findNavController()) }
                 )
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.dispatch(HomeEvent.OnResume, findNavController())
     }
 }

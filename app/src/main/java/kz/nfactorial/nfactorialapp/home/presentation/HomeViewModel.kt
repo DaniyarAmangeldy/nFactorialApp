@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
+import kz.nfactorial.nfactorialapp.home.data.account.AccountProvider
+import kz.nfactorial.nfactorialapp.home.data.model.Account
 import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
 import kz.nfactorial.nfactorialapp.home.presentation.models.Banner
 import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
@@ -16,14 +18,13 @@ import kz.nfactorial.nfactorialapp.home.presentation.models.Product
 import kz.nfactorial.nfactorialapp.home.presentation.models.Rating
 import kz.nfactorial.nfactorialapp.home.presentation.models.Store
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val accountProvider: AccountProvider,
+) : ViewModel() {
 
     var homeState by mutableStateOf(
         HomeState(
-            account = AccountInfo(
-                fullName = "Daniyar Amangeldy",
-                image = R.drawable.ic_spiderman,
-            ),
+            account = accountProvider.getAccount()?.toAccountInfo(),
             searchField = "",
             banner = Banner(
                 image = R.drawable.nike_banner,
@@ -144,6 +145,19 @@ class HomeViewModel : ViewModel() {
             is HomeEvent.OnStoreClick -> {
                 navController.navigate(HomeFragmentDirections.actionHomeToStore(event.store))
             }
+            is HomeEvent.OnRegistrationClick -> {
+                navController.navigate(HomeFragmentDirections.actionHomeToRegistration())
+            }
+            is HomeEvent.OnResume -> {
+                homeState = homeState.copy(account = accountProvider.getAccount()?.toAccountInfo())
+            }
         }
+    }
+
+    private fun Account.toAccountInfo(): AccountInfo {
+        return AccountInfo(
+            fullName = name,
+            image = R.drawable.ic_spiderman,
+        )
     }
 }
