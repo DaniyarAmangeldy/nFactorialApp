@@ -9,18 +9,18 @@ class SharedPreferencesAccountProvider(
 
     private val sharedPreferences = context.getSharedPreferences(PREFERENCES_ACCOUNT, Context.MODE_PRIVATE)
 
-    override fun getAccount(): Account? {
+    override suspend fun getAccount(): Account? {
         val name = sharedPreferences.getString(KEY_NAME, null) ?: return null
         val size = sharedPreferences.getInt(KEY_SIZE, -1).takeIf { it >= 0 }
 
         return Account(name = name, size = size)
     }
 
-    override fun setName(name: String) {
+    override suspend fun setName(name: String) {
         sharedPreferences.edit().putString(KEY_NAME, name).apply()
     }
 
-    override fun setSize(size: Int?) {
+    override suspend fun setSize(size: Int?) {
         sharedPreferences.edit().putInt(KEY_SIZE, size ?: -1).apply()
     }
 

@@ -10,17 +10,17 @@ import kz.nfactorial.nfactorialapp.home.data.db.entity.AccountDb
 interface AccountDao {
 
     @Query("SELECT * FROM AccountDb LIMIT 1")
-    fun getAccount(): AccountDb?
+    suspend fun getAccount(): AccountDb?
 
     @Transaction
-    fun deleteAllAndInsert(accountDb: AccountDb) {
+    suspend fun deleteAllAndInsert(accountDb: AccountDb) {
         deleteAll()
         insertAccount(accountDb)
     }
 
     @Insert
-    fun insertAccount(accountDb: AccountDb)
+    suspend fun insertAccount(accountDb: AccountDb)
 
     @Query("DELETE from AccountDb")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

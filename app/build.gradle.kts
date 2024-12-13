@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.adaptive.android)
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     implementation(libs.fragment)
     implementation(libs.activity)
     implementation(libs.navigation.ui)

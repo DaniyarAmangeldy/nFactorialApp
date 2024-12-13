@@ -11,16 +11,16 @@ class RoomAccountProvider(
 
     private val dao = DatabaseHolder.getOrCreate(context.applicationContext).getAccountDao()
 
-    override fun getAccount(): Account? {
+    override suspend fun getAccount(): Account? {
         return dao.getAccount()?.toAccount()
     }
 
-    override fun setName(name: String) {
+    override suspend fun setName(name: String) {
         val accountDb = dao.getAccount()?.copy(name = name) ?: AccountDb(0, name, null)
         dao.deleteAllAndInsert(accountDb)
     }
 
-    override fun setSize(size: Int?) {
+    override suspend fun setSize(size: Int?) {
         val accountDb = dao.getAccount()?.copy(size = size) ?: AccountDb(0, "", size)
         dao.deleteAllAndInsert(accountDb)
     }

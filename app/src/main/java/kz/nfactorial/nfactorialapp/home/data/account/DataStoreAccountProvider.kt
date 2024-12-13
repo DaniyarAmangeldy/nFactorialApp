@@ -14,7 +14,7 @@ class DataStoreAccountProvider(
 
     private val dataStore = context.accountDataStore
 
-    override fun getAccount(): Account? {
+    override suspend fun getAccount(): Account? {
         val data = runBlocking { dataStore.data.first() }
         val name = data[stringPreferencesKey(KEY_NAME)] ?: return null
         val size = data[intPreferencesKey(KEY_SIZE)]?.takeIf { it >= 0 }
@@ -22,13 +22,13 @@ class DataStoreAccountProvider(
         return Account(name, size)
     }
 
-    override fun setName(name: String) {
+    override suspend fun setName(name: String) {
         runBlocking {
             dataStore.edit { settings -> settings[stringPreferencesKey(KEY_NAME)] = name }
         }
     }
 
-    override fun setSize(size: Int?) {
+    override suspend fun setSize(size: Int?) {
         runBlocking {
             dataStore.edit { settings -> settings[intPreferencesKey(KEY_SIZE)] = size ?: -1 }
         }

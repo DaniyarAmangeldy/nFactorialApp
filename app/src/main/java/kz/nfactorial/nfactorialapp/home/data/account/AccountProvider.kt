@@ -4,9 +4,9 @@ import kz.nfactorial.nfactorialapp.home.data.model.Account
 
 interface AccountProvider {
 
-    fun getAccount(): Account?
+    suspend fun getAccount(): Account?
 
-    fun setName(name: String)
+    suspend fun setName(name: String)
 
-    fun setSize(size: Int?)
+    suspend fun setSize(size: Int?)
 }

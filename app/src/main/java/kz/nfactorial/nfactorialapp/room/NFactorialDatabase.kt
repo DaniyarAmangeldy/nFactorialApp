@@ -25,9 +25,7 @@ object DatabaseHolder {
                 context,
                 NFactorialDatabase::class.java,
                 "nfactorial-database",
-            )
-                .allowMainThreadQueries()
-                .build()
+            ).build()
         }
 
         return database
