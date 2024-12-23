@@ -30,34 +30,24 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
-import coil3.util.DebugLogger
 import kz.nfactorial.nfactorialapp.R
-import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
 import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
 import kz.nfactorial.nfactorialapp.home.presentation.models.Banner
 import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
 import kz.nfactorial.nfactorialapp.home.presentation.models.Collection
-import kz.nfactorial.nfactorialapp.home.presentation.models.Price
-import kz.nfactorial.nfactorialapp.home.presentation.models.Product
-import kz.nfactorial.nfactorialapp.home.presentation.models.Rating
 import kz.nfactorial.nfactorialapp.home.presentation.models.Store
 import kz.nfactorial.nfactorialapp.home.presentation.models.displayText
 import kz.nfactorial.nfactorialapp.ui.theme.LocalColors
@@ -76,7 +66,6 @@ fun HomeScreen(
                 .safeDrawingPadding(),
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-
             item(key = "Header") { Header(uiData.account, onEvent) }
             item(key = "SearchBar") {
                 SearchBar(
@@ -225,8 +214,7 @@ private fun BannerItem(
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            model = banner.image ,
-            imageLoader = ImageLoader.Builder(LocalContext.current).logger(DebugLogger()).build(),
+            model = banner.image,
             contentDescription = "banner_image",
             contentScale = ContentScale.FillWidth,
         )

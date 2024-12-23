@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
+import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
 import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepository
 import kz.nfactorial.nfactorialapp.home.presentation.factory.HomeStateFactory
+import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
 
 class HomeViewModel(
     private val homeRepository: HomeRepository,
@@ -46,7 +48,19 @@ class HomeViewModel(
             is HomeEvent.OnRegistrationClick -> {
                 navController.navigate(HomeFragmentDirections.actionHomeToRegistration())
             }
-            is HomeEvent.OnResume -> {}
+            is HomeEvent.OnResume -> {
+                viewModelScope.launch {
+                    val account = homeRepository.getAccountInfo()
+                    homeState = homeState.copy(
+                        uiData = homeState.uiData?.copy(
+                            account = AccountInfo(
+                                fullName = account?.name.orEmpty(),
+                                image = R.drawable.ic_spiderman
+                            )
+                        )
+                    )
+                }
+            }
         }
     }
 }

@@ -6,17 +6,25 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import kz.nfactorial.nfactorialapp.data.api.client.ApiClient
 import kz.nfactorial.nfactorialapp.extensions.viewModels
 import kz.nfactorial.nfactorialapp.home.data.account.RoomAccountProvider
 import kz.nfactorial.nfactorialapp.home.data.account.SharedPreferencesAccountProvider
+import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
 import kz.nfactorial.nfactorialapp.room.DatabaseHolder
 import kz.nfactorial.nfactorialapp.ui.theme.AppTheme
+import retrofit2.create
 
 class RegistrationFragment : Fragment() {
 
     private val viewModel: RegistrationViewModel by viewModels(
         viewModelInitializer = {
-            RegistrationViewModel(accountProvider = RoomAccountProvider(requireContext()))
+            RegistrationViewModel(
+                profileRepository = ProfileRepository(
+                    profileApiService = ApiClient(requireContext()).retrofit.create(),
+                    accountProvider = RoomAccountProvider(requireContext())
+                ),
+            )
         }
     )
 

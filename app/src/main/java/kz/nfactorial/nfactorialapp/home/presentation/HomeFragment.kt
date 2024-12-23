@@ -24,7 +24,7 @@ class HomeFragment: Fragment() {
         viewModelInitializer = {
             HomeViewModel(
                 homeRepository = HomeRepository(
-                    apiClient = ApiClient(),
+                    apiClient = ApiClient(requireContext()),
                     accountProvider = RoomAccountProvider(requireContext())
                 ),
                 homeStateFactory = HomeStateFactory(),
@@ -46,5 +46,10 @@ class HomeFragment: Fragment() {
                 )
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.dispatch(HomeEvent.OnResume, findNavController())
     }
 }

@@ -10,20 +10,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kz.nfactorial.nfactorialapp.home.data.account.AccountProvider
+import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
 
 class RegistrationViewModel(
-    private val accountProvider: AccountProvider,
+    private val profileRepository: ProfileRepository,
 ) : ViewModel() {
 
     var state: RegistrationState by mutableStateOf(RegistrationState(name = "", size = ""))
 
     init {
-        viewModelScope.launch {
-            val account = withContext(Dispatchers.IO) { accountProvider.getAccount() }
-            state = state.copy(
-                name = account?.name.orEmpty(),
-                size = account?.size?.toString().orEmpty(),
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            profileRepository.getProfile()
+                .onSuccess { account ->
+                    state = state.copy(
+                        name = account.name,
+                        size = account.size.toString(),
+                    )
+                }
         }
     }
 
@@ -37,12 +40,13 @@ class RegistrationViewModel(
             }
             RegistrationEvent.OnNameChangeSaveClicked -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    accountProvider.setName(state.name)
+                    profileRepository.setName(state.name)
                 }
             }
             RegistrationEvent.OnSizeChangeSaveClicked -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    accountProvider.setSize(state.size.toIntOrNull())
+                    val size = state.size.toIntOrNull() ?: return@launch
+                    profileRepository.setSize(size)
                 }
             }
             RegistrationEvent.OnBackClick -> {
