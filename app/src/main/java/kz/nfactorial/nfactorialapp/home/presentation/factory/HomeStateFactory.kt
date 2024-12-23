@@ -1,7 +1,12 @@
 package kz.nfactorial.nfactorialapp.home.presentation.factory
 
 import kz.nfactorial.nfactorialapp.R
+import kz.nfactorial.nfactorialapp.home.data.model.Account
+import kz.nfactorial.nfactorialapp.home.data.model.HomeComponentApi
+import kz.nfactorial.nfactorialapp.home.data.model.ProductApi
+import kz.nfactorial.nfactorialapp.home.data.model.StoreApi
 import kz.nfactorial.nfactorialapp.home.presentation.HomeState
+import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
 import kz.nfactorial.nfactorialapp.home.presentation.models.Banner
 import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
 import kz.nfactorial.nfactorialapp.home.presentation.models.Collection
@@ -14,109 +19,59 @@ class HomeStateFactory {
 
     fun createInitialState(): HomeState {
         return HomeState(
-            account = null,
             searchField = "",
-            banner = Banner(
-                image = R.drawable.nike_banner,
-                title = "It's Time for\nPayday Sale!",
-                description = "Up to 70% off!",
-            ),
-            filters = listOf(
-                ChipItem(1, "Sandals"),
-                ChipItem(2, "Heels"),
-                ChipItem(3, "Shoes"),
-                ChipItem(4, "Slippers"),
-                ChipItem(5, "Boots"),
-                ChipItem(6, "Sneakers"),
-                ChipItem(7, "Loafers"),
-                ChipItem(8, "Oxfords"),
-                ChipItem(9, "Moccasins"),
-                ChipItem(10, "Flip-flops"),
-            ),
+            uiData = null,
             selectedFilterIds = emptySet(),
-            collections = listOf(
-                Collection(
-                    name = "Trending Products",
-                    products = listOf(
-                        Product(
-                            name = "Founds",
-                            id = 1,
-                            image = R.drawable.founds,
-                            price = Price(45, "$"),
-                        ),
-                        Product(
-                            name = "Demix",
-                            id = 2,
-                            image = R.drawable.demix,
-                            price = Price(40, "$"),
-                        ),
-                        Product(
-                            name = "Dino Ricci",
-                            id = 3,
-                            image = R.drawable.dino_ricci,
-                            price = Price(38, "$"),
-                        ),
-                        Product(
-                            name = "Adidas Originals",
-                            id = 4,
-                            image = R.drawable.adidas_originals,
-                            price = Price(100, "$"),
-                        )
-                    ),
-                )
+        )
+    }
+
+    fun createUiData(data: HomeComponentApi, account: Account?): HomeState.UiData {
+        return HomeState.UiData(
+            account = account?.toAccountInfo(),
+            banner = Banner(
+                image = data.banner.image,
+                title = data.banner.title,
+                description = data.banner.description,
             ),
-            stores = listOf(
-                Store(
-                    id = 0,
-                    name = "Lamoda",
-                    image = R.drawable.store_lamoda,
-                    rating = Rating(4.7f, 2300),
-                ),
-                Store(
-                    id = 1,
-                    name = "Zara",
-                    image = R.drawable.store_zara,
-                    rating = Rating(4.4f, 21200),
-                    products = listOf(
-                        Product(
-                            name = "Founds",
-                            id = 1,
-                            image = R.drawable.shoes_1,
-                            price = Price(45, "$"),
-                        ),
-                        Product(
-                            name = "Demix",
-                            id = 2,
-                            image = R.drawable.shoes_5,
-                            price = Price(40, "$"),
-                        ),
-                        Product(
-                            name = "Dino Ricci",
-                            id = 3,
-                            image = R.drawable.shoes_6,
-                            price = Price(38, "$"),
-                        ),
-                        Product(
-                            name = "Adidas Originals",
-                            id = 4,
-                            image = R.drawable.shoes_7,
-                            price = Price(100, "$"),
-                        ),
-                    )
-                ),
-                Store(
-                    id = 2,
-                    name = "Intertop",
-                    image = R.drawable.store_intertop,
-                    rating = Rating(3.4f, 500),
-                ),
-                Store(
-                    id = 3,
-                    name = "Adidas",
-                    image = R.drawable.store_adidas,
-                    rating = Rating(5.0f, 23000),
+            filters = data.filters.map {
+                ChipItem(
+                    id = it.id.toInt(),
+                    name = it.name
                 )
+            },
+            collections = data.collections.map { apiModel ->
+                Collection(apiModel.name, apiModel.products.map(::mapProduct))
+            },
+            stores = data.storeCollections.flatMap { it.stores }.map(::mapStore),
+        )
+    }
+
+    private fun Account.toAccountInfo(): AccountInfo {
+        return AccountInfo(
+            fullName = name,
+            image = R.drawable.ic_spiderman,
+        )
+    }
+
+    private fun mapProduct(apiModel: ProductApi): Product {
+        return Product(
+            name = apiModel.name,
+            price = Price(apiModel.price.value.toInt(), apiModel.price.currency),
+            id = apiModel.id,
+            image =  apiModel.image,
+        )
+    }
+
+    private fun mapStore(apiModel: StoreApi): Store {
+        return Store(
+            id = apiModel.id,
+            name = apiModel.name,
+            image = apiModel.image,
+            rating = Rating(
+                average = apiModel.rating.average.toFloat(),
+                count = apiModel.rating.count,
             ),
+            products = apiModel.products.map(::mapProduct)
         )
     }
 }

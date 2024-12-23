@@ -39,11 +39,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
+import coil3.util.DebugLogger
 import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
 import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
@@ -63,47 +68,50 @@ fun HomeScreen(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit,
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding(),
-        contentPadding = PaddingValues(vertical = 16.dp)
-    ) {
+    val uiData = state.uiData
+    if (uiData != null) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .safeDrawingPadding(),
+            contentPadding = PaddingValues(vertical = 16.dp)
+        ) {
 
-        item(key = "Header") { Header(state.account, onEvent) }
-        item(key = "SearchBar") {
-            SearchBar(
-                text = state.searchField,
-                modifier = Modifier.padding(top = 16.dp),
-                onEvent = onEvent,
-            )
-        }
-        item(key = "BannerItem") {
-            BannerItem(
-                banner = state.banner,
-                modifier = Modifier.padding(top = 16.dp),
-            )
-        }
-        item(key = "FilterChips") {
-            FilterChips(
-                filters = state.filters,
-                selectedIds = state.selectedFilterIds,
-                modifier = Modifier.padding(top = 16.dp),
-                onEvent = onEvent,
-            )
-        }
-        items(state.collections, key = { it.name }) { collection ->
-            ProductCollections(
-                collection = collection,
-                modifier = Modifier.padding(top = 16.dp),
-            )
-        }
-        item(key = "Stores") {
-            Stores(
-                stores = state.stores,
-                onEvent = onEvent,
-                modifier = Modifier.padding(top = 16.dp),
-            )
+            item(key = "Header") { Header(uiData.account, onEvent) }
+            item(key = "SearchBar") {
+                SearchBar(
+                    text = state.searchField,
+                    modifier = Modifier.padding(top = 16.dp),
+                    onEvent = onEvent,
+                )
+            }
+            item(key = "BannerItem") {
+                BannerItem(
+                    banner = uiData.banner,
+                    modifier = Modifier.padding(top = 16.dp),
+                )
+            }
+            item(key = "FilterChips") {
+                FilterChips(
+                    filters = uiData.filters,
+                    selectedIds = state.selectedFilterIds,
+                    modifier = Modifier.padding(top = 16.dp),
+                    onEvent = onEvent,
+                )
+            }
+            items(uiData.collections, key = { it.name }) { collection ->
+                ProductCollections(
+                    collection = collection,
+                    modifier = Modifier.padding(top = 16.dp),
+                )
+            }
+            item(key = "Stores") {
+                Stores(
+                    stores = uiData.stores,
+                    onEvent = onEvent,
+                    modifier = Modifier.padding(top = 16.dp),
+                )
+            }
         }
     }
 }
@@ -215,9 +223,10 @@ private fun BannerItem(
             .height(150.dp)
             .clip(remember { RoundedCornerShape(20.dp) }),
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(banner.image),
+            model = banner.image ,
+            imageLoader = ImageLoader.Builder(LocalContext.current).logger(DebugLogger()).build(),
             contentDescription = "banner_image",
             contentScale = ContentScale.FillWidth,
         )
@@ -322,7 +331,7 @@ private fun ProductCollections(
                         .clip(remember { RoundedCornerShape(12.dp) })
                 ) {
                     Image(
-                        painter = painterResource(product.image),
+                        painter = rememberAsyncImagePainter(product.image),
                         contentDescription = product.name,
                         contentScale = ContentScale.FillBounds,
                     )
@@ -399,10 +408,9 @@ private fun Stores(
                             onClick = { onEvent(HomeEvent.OnStoreClick(store)) }
                         )
                 ) {
-                    Image(
-                        painter = painterResource(store.image),
+                    AsyncImage(
+                        model = store.image,
                         contentDescription = store.name,
-                        contentScale = ContentScale.Inside,
                     )
                     Box(
                         modifier = Modifier

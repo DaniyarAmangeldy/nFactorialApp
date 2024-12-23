@@ -6,10 +6,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Store(
-    val id: Int,
+    val id: String,
     val name: String,
-    @DrawableRes
-    val image: Int,
+    val image: String,
     val rating: Rating,
     val products: List<Product> = emptyList(),
 ) : Parcelable

@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil3.compose.rememberAsyncImagePainter
 import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.IntExtensions.toShortString
 import kz.nfactorial.nfactorialapp.home.presentation.models.Product
@@ -113,7 +114,7 @@ fun StoreInfo(store: Store, modifier: Modifier = Modifier) {
                 .clip(remember { RoundedCornerShape(12.dp) })
         ) {
             Image(
-                painter = painterResource(store.image),
+                painter = rememberAsyncImagePainter(store.image),
                 contentDescription = store.name,
                 contentScale = ContentScale.Inside,
             )
@@ -186,7 +187,7 @@ private fun ProductsGrid(products: List<Product>, modifier: Modifier = Modifier)
                     .clip(remember { RoundedCornerShape(12.dp) })
             ) {
                 Image(
-                    painter = painterResource(product.image),
+                    painter = rememberAsyncImagePainter(product.image),
                     contentDescription = product.name,
                     contentScale = ContentScale.FillWidth,
                 )

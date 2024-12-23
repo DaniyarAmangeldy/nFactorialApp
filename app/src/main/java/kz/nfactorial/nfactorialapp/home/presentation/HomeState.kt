@@ -7,11 +7,16 @@ import kz.nfactorial.nfactorialapp.home.presentation.models.Collection
 import kz.nfactorial.nfactorialapp.home.presentation.models.Store
 
 data class HomeState(
-    val account: AccountInfo?,
     val searchField: String,
-    val banner: Banner,
-    val filters: List<ChipItem>,
     val selectedFilterIds: Set<Int>,
-    val collections: List<Collection>,
-    val stores: List<Store>,
-)
+    val uiData: UiData? = null,
+) {
+
+    data class UiData(
+        val account: AccountInfo?,
+        val banner: Banner,
+        val filters: List<ChipItem>,
+        val collections: List<Collection>,
+        val stores: List<Store>,
+    )
+}
