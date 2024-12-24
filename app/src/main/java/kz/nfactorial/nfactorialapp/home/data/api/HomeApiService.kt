@@ -6,5 +6,5 @@ import retrofit2.http.GET
 interface HomeApiService {
 
     @GET("home")
-    suspend fun getHome(): Result<HomeComponentApi>
+    suspend fun getHome(): HomeComponentApi
 }

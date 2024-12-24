@@ -1,6 +1,9 @@
 package kz.nfactorial.nfactorialapp.home.data.account
 
 import android.content.Context
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kz.nfactorial.nfactorialapp.home.data.db.entity.AccountDb
 import kz.nfactorial.nfactorialapp.home.data.model.Account
 import kz.nfactorial.nfactorialapp.room.DatabaseHolder
@@ -11,8 +14,8 @@ class RoomAccountProvider(
 
     private val dao = DatabaseHolder.getOrCreate(context.applicationContext).getAccountDao()
 
-    override suspend fun getAccount(): Account? {
-        return dao.getAccount()?.toAccount()
+    override fun getAccount(): Flow<Account?> {
+        return dao.getAccountFlow().map { it?.toAccount() }
     }
 
     override suspend fun setName(name: String) {

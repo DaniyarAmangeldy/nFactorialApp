@@ -1,11 +1,14 @@
 package kz.nfactorial.nfactorialapp.home.presentation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
@@ -18,14 +21,16 @@ class HomeViewModel(
     homeStateFactory: HomeStateFactory,
 ) : ViewModel() {
 
-    var homeState by mutableStateOf(homeStateFactory.createInitialState())
+    private val _homeState = MutableStateFlow(homeStateFactory.createInitialState())
+    val homeState = _homeState.asStateFlow()
 
     init {
         viewModelScope.launch {
             homeRepository.getHomeComponents()
-                .onSuccess { components ->
-                    val account = homeRepository.getAccountInfo()
-                    homeState = homeState.copy(uiData = homeStateFactory.createUiData(components, account))
+                .combine(homeRepository.getAccountInfo(), ::Pair)
+                .catch { error -> Log.e(TAG, "Error during load home components: $error")}
+                .collect { (components, account) ->
+                    _homeState.update { it.copy(uiData = homeStateFactory.createUiData(components, account)) }
                 }
         }
     }
@@ -33,14 +38,12 @@ class HomeViewModel(
     fun dispatch(event: HomeEvent, navController: NavController) {
         when (event) {
             is HomeEvent.OnFilterClick -> {
-                homeState = homeState.copy(
-                    selectedFilterIds = homeState.selectedFilterIds.addOrRemove(event.filter.id),
-                )
+                _homeState.update {
+                    it.copy(selectedFilterIds = it.selectedFilterIds.addOrRemove(event.filter.id))
+                }
             }
             is HomeEvent.OnSearchChanged -> {
-                homeState = homeState.copy(
-                    searchField = event.text,
-                )
+                _homeState.update { it.copy(searchField = event.text) }
             }
             is HomeEvent.OnStoreClick -> {
                 navController.navigate(HomeFragmentDirections.actionHomeToStore(event.store))
@@ -48,19 +51,11 @@ class HomeViewModel(
             is HomeEvent.OnRegistrationClick -> {
                 navController.navigate(HomeFragmentDirections.actionHomeToRegistration())
             }
-            is HomeEvent.OnResume -> {
-                viewModelScope.launch {
-                    val account = homeRepository.getAccountInfo()
-                    homeState = homeState.copy(
-                        uiData = homeState.uiData?.copy(
-                            account = AccountInfo(
-                                fullName = account?.name.orEmpty(),
-                                image = R.drawable.ic_spiderman
-                            )
-                        )
-                    )
-                }
-            }
         }
+    }
+
+    private companion object {
+
+        const val TAG = "HomeViewModel"
     }
 }

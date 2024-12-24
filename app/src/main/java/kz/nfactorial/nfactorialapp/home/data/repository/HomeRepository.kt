@@ -1,5 +1,7 @@
 package kz.nfactorial.nfactorialapp.home.data.repository
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kz.nfactorial.nfactorialapp.data.api.client.ApiClient
 import kz.nfactorial.nfactorialapp.home.data.account.AccountProvider
 import kz.nfactorial.nfactorialapp.home.data.api.HomeApiService
@@ -13,11 +15,11 @@ class HomeRepository(
     private val homeApiService: HomeApiService = apiClient.retrofit.create(),
 ) {
 
-    suspend fun getAccountInfo(): Account? {
+    fun getAccountInfo(): Flow<Account?> {
         return accountProvider.getAccount()
     }
 
-    suspend fun getHomeComponents(): Result<HomeComponentApi> {
-        return homeApiService.getHome()
+    suspend fun getHomeComponents(): Flow<HomeComponentApi> {
+        return flow { emit(homeApiService.getHome()) }
     }
 }

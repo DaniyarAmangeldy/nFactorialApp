@@ -2,11 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/app_graph"
-    app:startDestination="@id/home"
+    app:startDestination="@id/homeFragment"
     >
 
     <fragment
-        android:id="@+id/home"
+        android:id="@+id/homeFragment"
         android:name="kz.nfactorial.nfactorialapp.home.presentation.HomeFragment"
     >
         <action
@@ -32,5 +32,10 @@
     <fragment
         android:id="@+id/registration"
         android:name="kz.nfactorial.nfactorialapp.registration.presentation.RegistrationFragment"/>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="kz.nfactorial.nfactorialapp.search.presentation.SearchFragment"
+        />
 
 </navigation>

@@ -1,31 +1,34 @@
 package kz.nfactorial.nfactorialapp.registration.presentation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kz.nfactorial.nfactorialapp.home.data.account.AccountProvider
 import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
 
 class RegistrationViewModel(
     private val profileRepository: ProfileRepository,
 ) : ViewModel() {
 
-    var state: RegistrationState by mutableStateOf(RegistrationState(name = "", size = ""))
+    private val _state = MutableStateFlow(RegistrationState(name = "", size = ""))
+    val state = _state.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             profileRepository.getProfile()
-                .onSuccess { account ->
-                    state = state.copy(
-                        name = account.name,
-                        size = account.size.toString(),
-                    )
+                .flowOn(Dispatchers.IO)
+                .collect { account ->
+                    _state.update {
+                        it.copy(
+                            name = account.name,
+                            size = account.size.toString(),
+                        )
+                    }
                 }
         }
     }
@@ -33,19 +36,21 @@ class RegistrationViewModel(
     fun dispatch(event: RegistrationEvent, navController: NavController) {
         when (event) {
             is RegistrationEvent.OnNameChanged -> {
-                state = state.copy(name = event.name)
+                _state.update {
+                    it.copy(name = event.name)
+                }
             }
             is RegistrationEvent.OnSizeChanged -> {
-                state = state.copy(size = event.size)
+                _state.update { it.copy(size = event.size) }
             }
             RegistrationEvent.OnNameChangeSaveClicked -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    profileRepository.setName(state.name)
+                    profileRepository.setName(state.value.name)
                 }
             }
             RegistrationEvent.OnSizeChangeSaveClicked -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val size = state.size.toIntOrNull() ?: return@launch
+                    val size = state.value.size.toIntOrNull() ?: return@launch
                     profileRepository.setSize(size)
                 }
             }

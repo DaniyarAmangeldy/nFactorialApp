@@ -9,10 +9,10 @@ import retrofit2.http.POST
 interface ProfileApiService {
 
     @GET("profile")
-    suspend fun getProfile(): Result<ProfileApi>
+    suspend fun getProfile(): ProfileApi
 
     @POST("profile")
     suspend fun updateProfile(
         @Body requestBody: ProfileRequestApi
-    ): Result<ProfileApi>
+    ): ProfileApi
 }

@@ -1,6 +1,8 @@
 package kz.nfactorial.nfactorialapp.home.data.account
 
 import android.content.Context
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kz.nfactorial.nfactorialapp.home.data.model.Account
 
 class SharedPreferencesAccountProvider(
@@ -9,11 +11,11 @@ class SharedPreferencesAccountProvider(
 
     private val sharedPreferences = context.getSharedPreferences(PREFERENCES_ACCOUNT, Context.MODE_PRIVATE)
 
-    override suspend fun getAccount(): Account? {
-        val name = sharedPreferences.getString(KEY_NAME, null) ?: return null
+    override fun getAccount(): Flow<Account?> {
+        val name = sharedPreferences.getString(KEY_NAME, null) ?: return flowOf(null)
         val size = sharedPreferences.getInt(KEY_SIZE, -1).takeIf { it >= 0 }
 
-        return Account(name = name, size = size)
+        return flowOf(Account(name = name, size = size))
     }
 
     override suspend fun setName(name: String) {

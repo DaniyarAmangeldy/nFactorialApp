@@ -1,10 +1,11 @@
 package kz.nfactorial.nfactorialapp.home.data.account
 
+import kotlinx.coroutines.flow.Flow
 import kz.nfactorial.nfactorialapp.home.data.model.Account
 
 interface AccountProvider {
 
-    suspend fun getAccount(): Account?
+    fun getAccount(): Flow<Account?>
 
     suspend fun setName(name: String)
 

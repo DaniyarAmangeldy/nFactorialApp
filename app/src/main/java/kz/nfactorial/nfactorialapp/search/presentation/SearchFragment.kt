@@ -1,4 +1,4 @@
-package kz.nfactorial.nfactorialapp.home.presentation
+package kz.nfactorial.nfactorialapp.search.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,21 +11,18 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import kz.nfactorial.nfactorialapp.data.api.client.ApiClient
 import kz.nfactorial.nfactorialapp.extensions.viewModels
-import kz.nfactorial.nfactorialapp.home.data.account.RoomAccountProvider
-import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepository
-import kz.nfactorial.nfactorialapp.home.presentation.factory.HomeStateFactory
+import kz.nfactorial.nfactorialapp.search.data.repository.ProductRepository
 import kz.nfactorial.nfactorialapp.ui.theme.AppTheme
+import retrofit2.create
 
-class HomeFragment: Fragment() {
+class SearchFragment: Fragment() {
 
-    private val viewModel: HomeViewModel by viewModels(
+    private val searchViewModel: SearchViewModel by viewModels(
         viewModelInitializer = {
-            HomeViewModel(
-                homeRepository = HomeRepository(
-                    apiClient = ApiClient(requireContext()),
-                    accountProvider = RoomAccountProvider(requireContext())
+            SearchViewModel(
+                productRepository = ProductRepository(
+                    ApiClient(requireContext()).retrofit.create(),
                 ),
-                homeStateFactory = HomeStateFactory(),
             )
         }
     )
@@ -38,12 +35,13 @@ class HomeFragment: Fragment() {
         val navController = findNavController()
         setContent {
             AppTheme {
-                val state by viewModel.homeState.collectAsState()
-                HomeScreen(
+                val state by searchViewModel.state.collectAsState()
+                SearchScreen(
                     state = state,
-                    onEvent = { event -> viewModel.dispatch(event, navController) }
+                    onEvent = searchViewModel::dispatch
                 )
             }
         }
     }
+
 }

@@ -12,6 +12,4 @@ sealed interface HomeEvent {
     data class OnFilterClick(val filter: ChipItem) : HomeEvent
 
     data object OnRegistrationClick : HomeEvent
-
-    data object OnResume : HomeEvent
 }
