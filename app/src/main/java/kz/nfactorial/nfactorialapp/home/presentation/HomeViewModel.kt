@@ -15,9 +15,11 @@ import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
 import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepository
 import kz.nfactorial.nfactorialapp.home.presentation.factory.HomeStateFactory
 import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
+import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
 
 class HomeViewModel(
     private val homeRepository: HomeRepository,
+    private val profileRepository: ProfileRepository,
     homeStateFactory: HomeStateFactory,
 ) : ViewModel() {
 
@@ -27,7 +29,7 @@ class HomeViewModel(
     init {
         viewModelScope.launch {
             homeRepository.getHomeComponents()
-                .combine(homeRepository.getAccountInfo(), ::Pair)
+                .combine(profileRepository.getProfile(), ::Pair)
                 .catch { error -> Log.e(TAG, "Error during load home components: $error")}
                 .collect { (components, account) ->
                     _homeState.update { it.copy(uiData = homeStateFactory.createUiData(components, account)) }

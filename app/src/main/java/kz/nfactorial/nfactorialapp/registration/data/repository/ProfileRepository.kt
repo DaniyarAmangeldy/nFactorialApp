@@ -1,10 +1,13 @@
 package kz.nfactorial.nfactorialapp.registration.data.repository
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.take
 import kz.nfactorial.nfactorialapp.home.data.account.AccountProvider
 import kz.nfactorial.nfactorialapp.home.data.model.ProfileApi
@@ -20,6 +23,7 @@ class ProfileRepository(
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun getProfile(): Flow<Account> {
         return accountProvider.getAccount()
+            .onEmpty { emit(null) }
             .take(1)
             .map { account -> account?.let(::mapToAccount) }
             .flatMapLatest { account ->
@@ -29,8 +33,9 @@ class ProfileRepository(
                     accountProvider.setSize(response.size)
                     accountProvider.setName(response.name)
                     emit(response)
-                }
+                }.flowOn(Dispatchers.IO)
             }
+            .flowOn(Dispatchers.IO)
     }
 
     suspend fun setSize(size: Int): Flow<Account> {

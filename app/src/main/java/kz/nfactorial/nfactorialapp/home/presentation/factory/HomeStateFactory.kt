@@ -1,7 +1,6 @@
 package kz.nfactorial.nfactorialapp.home.presentation.factory
 
 import kz.nfactorial.nfactorialapp.R
-import kz.nfactorial.nfactorialapp.home.data.model.Account
 import kz.nfactorial.nfactorialapp.home.data.model.HomeComponentApi
 import kz.nfactorial.nfactorialapp.home.data.model.ProductApi
 import kz.nfactorial.nfactorialapp.home.data.model.StoreApi
@@ -14,6 +13,7 @@ import kz.nfactorial.nfactorialapp.home.presentation.models.Price
 import kz.nfactorial.nfactorialapp.home.presentation.models.Product
 import kz.nfactorial.nfactorialapp.home.presentation.models.Rating
 import kz.nfactorial.nfactorialapp.home.presentation.models.Store
+import kz.nfactorial.nfactorialapp.registration.presentation.model.Account
 
 class HomeStateFactory {
 
