@@ -1,5 +1,10 @@
 package kz.nfactorial.nfactorialapp.search.presentation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -47,33 +52,31 @@ fun SearchScreen(
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Header()
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            item(key = "SearchBar") {
-                SearchBar(
-                    text = state.searchField,
-                    modifier = Modifier.padding(top = 16.dp),
-                    onEvent = onEvent,
-                )
-            }
-            when (val uiState = state.uiState) {
-                is SearchState.UiState.Data -> {
-                    items(uiState.items) { product ->
-                        ProductItem(product)
+        SearchBar(
+            text = state.searchField,
+            modifier = Modifier.padding(top = 16.dp),
+            onEvent = onEvent,
+        )
+        AnimatedContent(
+            targetState = state.uiState,
+            contentAlignment = Alignment.TopCenter,
+        ) { uiState ->
+            when (uiState) {
+                is SearchState.UiState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = LocalColors.current.brand.primary
+                        )
                     }
                 }
-                SearchState.UiState.Loading -> {
-                    item("Loader") {
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center),
-                                color = LocalColors.current.brand.primary
-                            )
+                is SearchState.UiState.Data -> {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(uiState.items) { product ->
+                            ProductItem(product)
                         }
-
                     }
                 }
             }
@@ -84,7 +87,9 @@ fun SearchScreen(
 @Composable
 private fun Header() {
     Box(
-        modifier = Modifier.fillMaxWidth().height(48.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

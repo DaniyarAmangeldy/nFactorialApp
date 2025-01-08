@@ -1,5 +1,8 @@
 package kz.nfactorial.nfactorialapp.home.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,11 +20,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -30,7 +35,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,14 +67,28 @@ fun HomeScreen(
     onEvent: (HomeEvent) -> Unit,
 ) {
     val uiData = state.uiData
+    var isColorWhite by remember { mutableStateOf(true) }
+    val brandColor = LocalColors.current.brand.primary
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isColorWhite) Color.White else brandColor,
+        label = "color",
+//        animationSpec = tween(5_000),
+    )
     if (uiData != null) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .safeDrawingPadding(),
+                .safeDrawingPadding()
+                .background(backgroundColor),
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-            item(key = "Header") { Header(uiData.account, onEvent) }
+            item(key = "Header") {
+                Header(
+                    uiData.account,
+                    onEvent,
+                    { isColorWhite = !isColorWhite }
+                )
+            }
             item(key = "SearchBar") {
                 SearchBar(
                     text = state.searchField,
@@ -108,7 +130,8 @@ fun HomeScreen(
 @Composable
 private fun Header(
     accountInfo: AccountInfo?,
-    onEvent: (HomeEvent) -> Unit
+    onEvent: (HomeEvent) -> Unit,
+    onClickIcon: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -143,7 +166,8 @@ private fun Header(
                     color = LocalColors.current.element.light,
                     shape = iconShape,
                 )
-                .clip(iconShape),
+                .clip(iconShape)
+                .clickable { onClickIcon() },
             contentAlignment = Alignment.Center,
         ) {
             Image(
@@ -205,41 +229,58 @@ private fun BannerItem(
     banner: Banner,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
-            .padding(horizontal = 30.dp)
-            .fillMaxWidth()
-            .height(150.dp)
-            .clip(remember { RoundedCornerShape(20.dp) }),
+    var isVisible by remember { mutableStateOf(true) }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AsyncImage(
-            modifier = Modifier.fillMaxSize(),
-            model = banner.image,
-            contentDescription = "banner_image",
-            contentScale = ContentScale.FillWidth,
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0x1d000000))
-        )
-        Column(
-            modifier = Modifier
-                .padding(top = 28.dp, start = 20.dp)
-                .fillMaxHeight()
-                .align(Alignment.TopStart),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        AnimatedVisibility(
+            visible = isVisible,
+//            enter = fadeIn() + slideInHorizontally(),
+//            exit = fadeOut() + slideOutVertically(),
         ) {
-            Text(
-                text = banner.title,
-                color = LocalColors.current.text.primaryInverse,
-                style = LocalTypography.current.bold.bold700,
-            )
-            Text(
-                text = banner.description,
-                color = LocalColors.current.text.primaryInverse,
-                style = LocalTypography.current.medium.medium400,
-            )
+            Box(
+                modifier = modifier
+                    .padding(horizontal = 30.dp)
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .clip(remember { RoundedCornerShape(20.dp) }),
+            ) {
+                AsyncImage(
+                    modifier = Modifier.fillMaxSize(),
+                    model = banner.image,
+                    contentDescription = "banner_image",
+                    contentScale = ContentScale.FillWidth,
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(0x1d000000))
+                )
+                Column(
+                    modifier = Modifier
+                        .padding(top = 28.dp, start = 20.dp)
+                        .fillMaxHeight()
+                        .align(Alignment.TopStart),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = banner.title,
+                        color = LocalColors.current.text.primaryInverse,
+                        style = LocalTypography.current.bold.bold700,
+                    )
+                    Text(
+                        text = banner.description,
+                        color = LocalColors.current.text.primaryInverse,
+                        style = LocalTypography.current.medium.medium400,
+                    )
+                }
+            }
+        }
+        Button(
+            onClick = { isVisible = !isVisible }
+        ) {
+            Text(text = "Show/Hide Banner")
         }
     }
 }
@@ -259,9 +300,13 @@ private fun FilterChips(
         contentPadding = PaddingValues(horizontal = 30.dp)
     ) {
         items(filters) { item ->
+            var isSizeSmall by remember { mutableStateOf(false) }
             FilterChip(
+                modifier = Modifier
+                    .animateContentSize()
+                    .width(if (isSizeSmall) 50.dp else 100.dp),
                 selected = item.id in selectedIds,
-                onClick = { onEvent(HomeEvent.OnFilterClick(item)) },
+                onClick = { isSizeSmall = !isSizeSmall },
                 label = {
                     Text(
                         text = item.name,
