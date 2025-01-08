@@ -14,18 +14,26 @@ import kz.nfactorial.nfactorialapp.extensions.viewModels
 import kz.nfactorial.nfactorialapp.home.data.account.RoomAccountProvider
 import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepository
 import kz.nfactorial.nfactorialapp.home.presentation.factory.HomeStateFactory
+import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
 import kz.nfactorial.nfactorialapp.ui.theme.AppTheme
+import retrofit2.create
 
 class HomeFragment: Fragment() {
 
     private val viewModel: HomeViewModel by viewModels(
         viewModelInitializer = {
+            val apiClient = ApiClient(requireContext())
+            val accountProvider = RoomAccountProvider(requireContext())
             HomeViewModel(
                 homeRepository = HomeRepository(
-                    apiClient = ApiClient(requireContext()),
-                    accountProvider = RoomAccountProvider(requireContext())
+                    apiClient = apiClient,
+                    accountProvider = accountProvider,
                 ),
                 homeStateFactory = HomeStateFactory(),
+                profileRepository = ProfileRepository(
+                    profileApiService = apiClient.retrofit.create(),
+                    accountProvider = accountProvider,
+                )
             )
         }
     )
