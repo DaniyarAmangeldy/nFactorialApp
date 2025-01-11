@@ -10,11 +10,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
 import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepository
 import kz.nfactorial.nfactorialapp.home.presentation.factory.HomeStateFactory
-import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
 import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
 
 class HomeViewModel(
@@ -43,6 +41,18 @@ class HomeViewModel(
                 _homeState.update {
                     it.copy(selectedFilterIds = it.selectedFilterIds.addOrRemove(event.filter.id))
                 }
+            }
+            is HomeEvent.OnAdCloseClick -> {
+                _homeState.update { it.copy(isAdShow = false) }
+            }
+            is HomeEvent.OnAdClick -> {
+                _homeState.update { it.copy(isAdShow = true) }
+            }
+            is HomeEvent.OnConnectionAvailable -> {
+                _homeState.update { it.copy(connectionLostBannerVisible = false) }
+            }
+            is HomeEvent.OnConnectionLost -> {
+                _homeState.update { it.copy(connectionLostBannerVisible = true) }
             }
             is HomeEvent.OnSearchChanged -> {
                 _homeState.update { it.copy(searchField = event.text) }

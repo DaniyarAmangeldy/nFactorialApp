@@ -13,4 +13,6 @@
     <string name="update_your_profile">Update profile</string>
     <string name="name_field_placeholder">Name</string>
     <string name="size_field_placeholder">Size</string>
+
+    <string name="advertisement_title">Nike 50% Off</string>
 </resources>

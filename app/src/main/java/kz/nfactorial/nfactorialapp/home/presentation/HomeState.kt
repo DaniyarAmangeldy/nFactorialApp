@@ -9,7 +9,9 @@ import kz.nfactorial.nfactorialapp.home.presentation.models.Store
 data class HomeState(
     val searchField: String,
     val selectedFilterIds: Set<Int>,
+    val isAdShow: Boolean = false,
     val uiData: UiData? = null,
+    val connectionLostBannerVisible: Boolean = false,
 ) {
 
     data class UiData(
