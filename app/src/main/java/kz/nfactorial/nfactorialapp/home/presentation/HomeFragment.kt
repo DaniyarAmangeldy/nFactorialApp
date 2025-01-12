@@ -47,9 +47,11 @@ class HomeFragment: Fragment() {
         setContent {
             AppTheme {
                 val state by viewModel.homeState.collectAsState()
+                val effect by viewModel.effect.collectAsState(null)
                 HomeScreen(
                     state = state,
-                    onEvent = { event -> viewModel.dispatch(event, navController) }
+                    onEvent = { event -> viewModel.dispatch(event, navController) },
+                    effect = effect,
                 )
             }
         }

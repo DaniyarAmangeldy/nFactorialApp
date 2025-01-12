@@ -1,12 +1,13 @@
 package kz.nfactorial.nfactorialapp.home.presentation
 
 import android.app.Activity
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.util.Log
-import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
@@ -19,7 +20,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,10 +48,10 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,6 +77,7 @@ import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
 import kz.nfactorial.nfactorialapp.home.presentation.models.Collection
 import kz.nfactorial.nfactorialapp.home.presentation.models.Store
 import kz.nfactorial.nfactorialapp.home.presentation.models.displayText
+import kz.nfactorial.nfactorialapp.photo.presentation.ChoosePhotoActivity
 import kz.nfactorial.nfactorialapp.ui.theme.LocalColors
 import kz.nfactorial.nfactorialapp.ui.theme.LocalTypography
 
@@ -85,10 +86,17 @@ import kz.nfactorial.nfactorialapp.ui.theme.LocalTypography
 fun HomeScreen(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit,
+    effect: HomeEffect?,
 ) {
+    val activity = LocalContext.current as Activity
     val uiData = state.uiData
     val adBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isAdBottomSheetVisible by remember { mutableStateOf(false) }
+    val openChooseImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            onEvent(HomeEvent.OnImageUpdated)
+        }
+    }
     if (uiData != null) {
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
@@ -192,9 +200,18 @@ fun HomeScreen(
             connectivityManager.unregisterNetworkCallback(callback)
         }
     }
+    LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
+        onEvent(HomeEvent.OnCreate)
+    }
 
-    LifecycleEventEffect(event = Lifecycle.Event.ON_START) {
-        Log.d("HomeScreen", "OnStart")
+    LaunchedEffect(effect) {
+        when (effect) {
+            is HomeEffect.OpenChooseImage -> {
+                val intent = Intent(activity, ChoosePhotoActivity::class.java)
+                openChooseImageLauncher.launch(intent)
+            }
+            null -> Unit
+        }
     }
 }
 
@@ -236,12 +253,17 @@ private fun Header(
                     color = LocalColors.current.element.light,
                     shape = iconShape,
                 )
-                .clip(iconShape),
+                .clip(iconShape)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(),
+                    onClick = { onEvent(HomeEvent.OnProfileImageClick) }
+                ),
             contentAlignment = Alignment.Center,
         ) {
-            Image(
+            AsyncImage(
                 modifier = Modifier.size(24.dp),
-                painter = painterResource(accountInfo?.image ?: R.drawable.baseline_person_24),
+                model = accountInfo?.image ?: R.drawable.baseline_person_24,
                 contentDescription = "profile",
             )
         }
@@ -356,6 +378,10 @@ private fun ConnectionLostComponent() {
             style = LocalTypography.current.medium.medium300,
             text = "Connection Lost",
         )
+    }
+
+    SideEffect {
+        Log.d("HomeScreen", "ConnectionLostComponent shown")
     }
 }
 

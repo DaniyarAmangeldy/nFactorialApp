@@ -16,4 +16,7 @@ data class AccountDb(
 
     @ColumnInfo("size")
     val size: Int?,
+
+    @ColumnInfo("image")
+    val image: String?,
 )

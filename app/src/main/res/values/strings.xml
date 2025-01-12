@@ -15,4 +15,8 @@
     <string name="size_field_placeholder">Size</string>
 
     <string name="advertisement_title">Nike 50% Off</string>
+
+    <string name="choose_from_camera">Camera</string>
+    <string name="choose_from_gallery">Gallery</string>
+    <string name="submit">Submit</string>
 </resources>

@@ -1,6 +1,5 @@
 package kz.nfactorial.nfactorialapp.home.presentation.factory
 
-import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.home.data.model.HomeComponentApi
 import kz.nfactorial.nfactorialapp.home.data.model.ProductApi
 import kz.nfactorial.nfactorialapp.home.data.model.StoreApi
@@ -21,7 +20,7 @@ class HomeStateFactory {
         return HomeState(
             searchField = "",
             uiData = null,
-            isAdShow = true,
+            isAdShow = false,
             selectedFilterIds = emptySet(),
             connectionLostBannerVisible = false,
         )
@@ -48,10 +47,16 @@ class HomeStateFactory {
         )
     }
 
+    fun updateProfile(uiData: HomeState.UiData, account: Account?): HomeState.UiData {
+        return uiData.copy(
+            account = account?.toAccountInfo()
+        )
+    }
+
     private fun Account.toAccountInfo(): AccountInfo {
         return AccountInfo(
             fullName = name,
-            image = R.drawable.ic_spiderman,
+            image = image,
         )
     }
 

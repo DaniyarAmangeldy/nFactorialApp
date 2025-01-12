@@ -1,5 +1,6 @@
 package kz.nfactorial.nfactorialapp.registration.data.repository
 
+import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +22,7 @@ class ProfileRepository(
 ) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun getProfile(): Flow<Account> {
+    fun getProfile(): Flow<Account> {
         return accountProvider.getAccount()
             .onEmpty { emit(null) }
             .take(1)
@@ -32,7 +33,7 @@ class ProfileRepository(
                     val response = profileApiService.getProfile().let(::mapToAccount)
                     accountProvider.setSize(response.size)
                     accountProvider.setName(response.name)
-                    emit(response)
+                    emit(response.copy(image = account?.image))
                 }.flowOn(Dispatchers.IO)
             }
             .flowOn(Dispatchers.IO)
@@ -46,6 +47,10 @@ class ProfileRepository(
             accountProvider.setSize(response.size)
             emit(response)
         }
+    }
+
+    suspend fun setImage(image: Uri?) {
+        accountProvider.setImage(image)
     }
 
     suspend fun setName(name: String): Flow<Account> {
@@ -62,6 +67,7 @@ class ProfileRepository(
         return Account(
             name = apiModel.name,
             size = apiModel.size.toIntOrNull() ?: -1,
+            image = null,
         )
     }
 
@@ -69,6 +75,7 @@ class ProfileRepository(
         return Account(
             name = dbModel.name,
             size = dbModel.size ?: -1,
+            image = dbModel.image,
         )
     }
 }

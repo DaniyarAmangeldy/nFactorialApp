@@ -2,7 +2,6 @@ package kz.nfactorial.nfactorialapp
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.activity.compose.setContent
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -29,7 +27,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import kz.nfactorial.nfactorialapp.room.DatabaseHolder
 import kz.nfactorial.nfactorialapp.ui.theme.LocalColors
 
 class MainActivity : FragmentActivity() {

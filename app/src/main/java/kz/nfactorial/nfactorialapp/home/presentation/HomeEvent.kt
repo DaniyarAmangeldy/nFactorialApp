@@ -15,9 +15,15 @@ sealed interface HomeEvent {
 
     data object OnAdCloseClick : HomeEvent
 
+    data object OnCreate : HomeEvent
+
     data object OnAdClick : HomeEvent
+
+    data object OnImageUpdated : HomeEvent
 
     data object OnConnectionAvailable : HomeEvent
 
     data object OnConnectionLost : HomeEvent
+
+    data object OnProfileImageClick : HomeEvent
 }
