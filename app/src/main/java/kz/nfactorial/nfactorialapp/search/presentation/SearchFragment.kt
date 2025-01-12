@@ -9,23 +9,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import kz.nfactorial.nfactorialapp.data.api.client.ApiClient
-import kz.nfactorial.nfactorialapp.extensions.viewModels
-import kz.nfactorial.nfactorialapp.search.data.repository.ProductRepository
 import kz.nfactorial.nfactorialapp.ui.theme.AppTheme
-import retrofit2.create
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
 
-    private val searchViewModel: SearchViewModel by viewModels(
-        viewModelInitializer = {
-            SearchViewModel(
-                productRepository = ProductRepository(
-                    ApiClient(requireContext()).retrofit.create(),
-                ),
-            )
-        }
-    )
+    private val searchViewModel: SearchViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,5 +32,4 @@ class SearchFragment: Fragment() {
             }
         }
     }
-
 }

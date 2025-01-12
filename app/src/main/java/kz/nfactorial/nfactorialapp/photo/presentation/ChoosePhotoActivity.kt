@@ -6,23 +6,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.fragment.app.FragmentActivity
-import kz.nfactorial.nfactorialapp.data.api.client.ApiClient
-import kz.nfactorial.nfactorialapp.extensions.viewModels
-import kz.nfactorial.nfactorialapp.home.data.account.RoomAccountProvider
-import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
 import kz.nfactorial.nfactorialapp.ui.theme.AppTheme
-import retrofit2.create
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ChoosePhotoActivity: FragmentActivity() {
 
-    private val choosePhotoViewModel: ChoosePhotoViewModel by viewModels {
-        ChoosePhotoViewModel(
-            profileRepository = ProfileRepository(
-                profileApiService = ApiClient(this).retrofit.create(),
-                accountProvider = RoomAccountProvider(this)
-            )
-        )
-    }
+    private val choosePhotoViewModel: ChoosePhotoViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

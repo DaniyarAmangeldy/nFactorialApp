@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.retrofit.kotlin.result)
     implementation(libs.coil)
     implementation(libs.coil.network)
+    implementation(libs.koin)
     debugImplementation(libs.chucker)
     releaseImplementation(libs.chuckerNoOp)
     testImplementation(libs.junit)

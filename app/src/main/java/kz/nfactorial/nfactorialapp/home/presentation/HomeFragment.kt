@@ -9,34 +9,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import kz.nfactorial.nfactorialapp.data.api.client.ApiClient
-import kz.nfactorial.nfactorialapp.extensions.viewModels
-import kz.nfactorial.nfactorialapp.home.data.account.RoomAccountProvider
-import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepository
-import kz.nfactorial.nfactorialapp.home.presentation.factory.HomeStateFactory
-import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
 import kz.nfactorial.nfactorialapp.ui.theme.AppTheme
-import retrofit2.create
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment: Fragment() {
 
-    private val viewModel: HomeViewModel by viewModels(
-        viewModelInitializer = {
-            val apiClient = ApiClient(requireContext())
-            val accountProvider = RoomAccountProvider(requireContext())
-            HomeViewModel(
-                homeRepository = HomeRepository(
-                    apiClient = apiClient,
-                    accountProvider = accountProvider,
-                ),
-                homeStateFactory = HomeStateFactory(),
-                profileRepository = ProfileRepository(
-                    profileApiService = apiClient.retrofit.create(),
-                    accountProvider = accountProvider,
-                )
-            )
-        }
-    )
+    private val homeViewModel: HomeViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,11 +24,11 @@ class HomeFragment: Fragment() {
         val navController = findNavController()
         setContent {
             AppTheme {
-                val state by viewModel.homeState.collectAsState()
-                val effect by viewModel.effect.collectAsState(null)
+                val state by homeViewModel.homeState.collectAsState()
+                val effect by homeViewModel.effect.collectAsState(null)
                 HomeScreen(
                     state = state,
-                    onEvent = { event -> viewModel.dispatch(event, navController) },
+                    onEvent = { event -> homeViewModel.dispatch(event, navController) },
                     effect = effect,
                 )
             }

@@ -21,6 +21,7 @@ serialization = "1.6.0"
 coil = "3.0.4"
 retrofit-adapters = "1.0.12"
 chucker = "4.1.0"
+koin = "4.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,6 +56,7 @@ coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", versi
 retrofit-kotlin-result = { group = "com.github.skydoves", name = "retrofit-adapters-result", version.ref = "retrofit-adapters" }
 chucker = { group = "com.github.chuckerteam.chucker", name = "library", version.ref = "chucker" }
 chuckerNoOp = { group = "com.github.chuckerteam.chucker", name = "library-no-op", version.ref = "chucker" }
+koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 
 [plugins]
 jetbrains-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
