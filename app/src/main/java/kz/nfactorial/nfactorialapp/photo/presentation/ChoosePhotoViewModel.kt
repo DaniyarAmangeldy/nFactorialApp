@@ -3,10 +3,10 @@ package kz.nfactorial.nfactorialapp.photo.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -20,8 +20,8 @@ class ChoosePhotoViewModel(
     private val _state = MutableStateFlow(ChoosePhotoState())
     val state = _state.asStateFlow()
 
-    private val _event = Channel<ChoosePhotoEffect?>()
-    val effect = _event.consumeAsFlow()
+    private val _event = MutableSharedFlow<ChoosePhotoEffect?>()
+    val effect = _event.asSharedFlow()
 
     init {
         profileRepository
@@ -34,12 +34,12 @@ class ChoosePhotoViewModel(
         when (event) {
             is ChoosePhotoEvent.OnCameraClick -> {
                 viewModelScope.launch {
-                    _event.send(ChoosePhotoEffect.OpenCamera())
+                    _event.emit(ChoosePhotoEffect.OpenCamera())
                 }
             }
             is ChoosePhotoEvent.OnGalleryClick -> {
                 viewModelScope.launch {
-                    _event.send(ChoosePhotoEffect.OpenGallery())
+                    _event.emit(ChoosePhotoEffect.OpenGallery())
                 }
             }
             is ChoosePhotoEvent.OnPhotoSelected -> {
@@ -49,7 +49,7 @@ class ChoosePhotoViewModel(
                 val uri = _state.value.selectedPhoto ?: return
                 viewModelScope.launch(Dispatchers.IO) {
                     profileRepository.setImage(uri)
-                    _event.send(ChoosePhotoEffect.Close(uri))
+                    _event.emit(ChoosePhotoEffect.Close(uri))
                 }
             }
         }
