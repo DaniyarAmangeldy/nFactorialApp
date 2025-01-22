@@ -5,6 +5,7 @@ import kz.nfactorial.nfactorialapp.home.data.dataSource.HomeRemoteDataSource
 import kz.nfactorial.nfactorialapp.home.data.dataSource.HomeRemoteDataSourceImpl
 import kz.nfactorial.nfactorialapp.home.data.mappers.HomeComponentApiToDomainMapper
 import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepositoryImpl
+import kz.nfactorial.nfactorialapp.home.domain.repository.entity.HomeRepository
 import kz.nfactorial.nfactorialapp.home.domain.usecases.GetHomeComponentsUseCase
 import kz.nfactorial.nfactorialapp.home.presentation.HomeViewModel
 import kz.nfactorial.nfactorialapp.home.presentation.factory.HomeStateFactory
@@ -17,7 +18,6 @@ val homeModule = module {
 
     viewModel {
         HomeViewModel(
-            homeRepositoryImpl = get(),
             profileRepository = get(),
             homeStateFactory = get(),
             getHomeComponentsUseCase = get(),
@@ -30,7 +30,7 @@ val homeModule = module {
         )
     }
 
-    factory {
+    factory<HomeRepository> {
         HomeRepositoryImpl(
             accountProvider = get(),
             homeRemoteDataSource = get(),

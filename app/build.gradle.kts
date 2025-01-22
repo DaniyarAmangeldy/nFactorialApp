@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.network)
     implementation(libs.koin)
+    implementation(libs.workManager)
     debugImplementation(libs.chucker)
     releaseImplementation(libs.chuckerNoOp)
     testImplementation(libs.junit)

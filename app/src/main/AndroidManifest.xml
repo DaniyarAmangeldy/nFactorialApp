@@ -12,6 +12,12 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".NFactorialAppApplication"
         android:allowBackup="true"
@@ -46,6 +52,20 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <service
+            android:name="kz.nfactorial.nfactorialapp.home.presentation.service.HomeService"
+            android:exported="false"
+            />
+        <service
+            android:name="kz.nfactorial.nfactorialapp.home.presentation.service.HomeForegroundService"
+            android:foregroundServiceType="dataSync"
+            />
+
+        <service
+            android:name="kz.nfactorial.nfactorialapp.home.presentation.service.HomeBoundService"
+            android:exported="false"
+            />
 
     </application>
 
