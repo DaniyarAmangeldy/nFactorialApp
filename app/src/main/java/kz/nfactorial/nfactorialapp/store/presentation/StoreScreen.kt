@@ -37,13 +37,13 @@ import coil3.compose.rememberAsyncImagePainter
 import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.extensions.IntExtensions.toShortString
 import kz.nfactorial.nfactorialapp.home.presentation.models.Product
-import kz.nfactorial.nfactorialapp.home.presentation.models.Store
+import kz.nfactorial.nfactorialapp.home.presentation.models.StoreUI
 import kz.nfactorial.nfactorialapp.home.presentation.models.displayText
 import kz.nfactorial.nfactorialapp.ui.theme.LocalColors
 import kz.nfactorial.nfactorialapp.ui.theme.LocalTypography
 
 @Composable
-fun StoreScreen(store: Store, onBackClick: () -> Unit) {
+fun StoreScreen(storeUI: StoreUI, onBackClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,11 +58,11 @@ fun StoreScreen(store: Store, onBackClick: () -> Unit) {
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
             item(key = "StoreInfo") {
-                StoreInfo(store)
+                StoreInfo(storeUI)
             }
             item(key = "Products") {
                 val products = remember {
-                    (store.products + store.products + store.products + store.products)
+                    (storeUI.products + storeUI.products + storeUI.products + storeUI.products)
                 }
                 ProductsGrid(products, modifier = Modifier.padding(top = 24.dp))
             }
@@ -100,7 +100,7 @@ private fun Header(onBackClick: () -> Unit) {
 }
 
 @Composable
-fun StoreInfo(store: Store, modifier: Modifier = Modifier) {
+fun StoreInfo(storeUI: StoreUI, modifier: Modifier = Modifier) {
     Row(
        modifier = modifier
            .padding(horizontal = 16.dp)
@@ -114,8 +114,8 @@ fun StoreInfo(store: Store, modifier: Modifier = Modifier) {
                 .clip(remember { RoundedCornerShape(12.dp) })
         ) {
             Image(
-                painter = rememberAsyncImagePainter(store.image),
-                contentDescription = store.name,
+                painter = rememberAsyncImagePainter(storeUI.image),
+                contentDescription = storeUI.name,
                 contentScale = ContentScale.Inside,
             )
             Box(
@@ -128,7 +128,7 @@ fun StoreInfo(store: Store, modifier: Modifier = Modifier) {
             modifier = Modifier.padding(top = 8.dp)
         ) {
             Text(
-                text = store.name,
+                text = storeUI.name,
                 color = LocalColors.current.text.primary,
                 style = LocalTypography.current.bold.bold500,
             )
@@ -141,7 +141,7 @@ fun StoreInfo(store: Store, modifier: Modifier = Modifier) {
                     contentDescription = null,
                 )
                 Text(
-                    text = store.name,
+                    text = storeUI.name,
                     color = LocalColors.current.text.primary,
                     style = LocalTypography.current.medium.medium300,
                 )
@@ -159,8 +159,8 @@ fun StoreInfo(store: Store, modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(
                         R.string.store_details_rating_fmt,
-                        store.rating.average,
-                        store.rating.count.toShortString()
+                        storeUI.rating.average,
+                        storeUI.rating.count.toShortString()
                     ),
                     color = LocalColors.current.text.primary,
                     style = LocalTypography.current.medium.medium300,

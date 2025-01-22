@@ -14,14 +14,14 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kz.nfactorial.nfactorialapp.extensions.CollectionExtensions.addOrRemove
-import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepository
+import kz.nfactorial.nfactorialapp.home.domain.usecases.GetHomeComponentsUseCase
 import kz.nfactorial.nfactorialapp.home.presentation.factory.HomeStateFactory
 import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
 
 class HomeViewModel(
-    private val homeRepository: HomeRepository,
     private val profileRepository: ProfileRepository,
     private val homeStateFactory: HomeStateFactory,
+    private val getHomeComponentsUseCase: GetHomeComponentsUseCase,
 ) : ViewModel() {
 
     private val _homeState = MutableStateFlow(homeStateFactory.createInitialState())
@@ -67,7 +67,7 @@ class HomeViewModel(
             }
             is HomeEvent.OnCreate -> {
                 viewModelScope.launch {
-                    homeRepository.getHomeComponents()
+                    getHomeComponentsUseCase()
                         .combine(profileRepository.getProfile(), ::Pair)
                         .catch { error -> Log.e(TAG, "Error during load home components: $error")}
                         .collect { (components, account) ->
@@ -76,7 +76,7 @@ class HomeViewModel(
                 }
             }
             is HomeEvent.OnStoreClick -> {
-                navController.navigate(HomeFragmentDirections.actionHomeToStore(event.store))
+                navController.navigate(HomeFragmentDirections.actionHomeToStore(event.storeUI))
             }
             is HomeEvent.OnRegistrationClick -> {
                 navController.navigate(HomeFragmentDirections.actionHomeToRegistration())

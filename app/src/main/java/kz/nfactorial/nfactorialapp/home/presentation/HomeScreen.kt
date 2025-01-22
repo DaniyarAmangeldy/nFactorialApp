@@ -75,7 +75,7 @@ import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
 import kz.nfactorial.nfactorialapp.home.presentation.models.Banner
 import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
 import kz.nfactorial.nfactorialapp.home.presentation.models.Collection
-import kz.nfactorial.nfactorialapp.home.presentation.models.Store
+import kz.nfactorial.nfactorialapp.home.presentation.models.StoreUI
 import kz.nfactorial.nfactorialapp.home.presentation.models.displayText
 import kz.nfactorial.nfactorialapp.photo.presentation.ChoosePhotoActivity
 import kz.nfactorial.nfactorialapp.ui.theme.LocalColors
@@ -113,13 +113,13 @@ fun HomeScreen(
                         onEvent = onEvent,
                     )
                 }
-                item(key = "BannerItem") {
-                    BannerItem(
-                        banner = uiData.banner,
-                        onEvent = onEvent,
-                        modifier = Modifier.padding(top = 16.dp),
-                    )
-                }
+//                item(key = "BannerItem") {
+//                    BannerItem(
+//                        banner = uiData.banner,
+//                        onEvent = onEvent,
+//                        modifier = Modifier.padding(top = 16.dp),
+//                    )
+//                }
                 item(key = "FilterChips") {
                     FilterChips(
                         filters = uiData.filters,
@@ -128,15 +128,15 @@ fun HomeScreen(
                         onEvent = onEvent,
                     )
                 }
-                items(uiData.collections, key = { it.name }) { collection ->
-                    ProductCollections(
-                        collection = collection,
-                        modifier = Modifier.padding(top = 16.dp),
-                    )
-                }
+//                items(uiData.collections, key = { it.name }) { collection ->
+//                    ProductCollections(
+//                        collection = collection,
+//                        modifier = Modifier.padding(top = 16.dp),
+//                    )
+//                }
                 item(key = "Stores") {
                     Stores(
-                        stores = uiData.stores,
+                        storeUIS = uiData.storeUI,
                         onEvent = onEvent,
                         modifier = Modifier.padding(top = 16.dp),
                     )
@@ -562,7 +562,7 @@ private fun ProductCollections(
 
 @Composable
 private fun Stores(
-    stores: List<Store>,
+    storeUIS: List<StoreUI>,
     modifier: Modifier = Modifier,
     onEvent: (HomeEvent) -> Unit,
 ) {
@@ -593,7 +593,7 @@ private fun Stores(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(horizontal = 30.dp)
         ) {
-            items(stores) { store ->
+            items(storeUIS) { store ->
                 Box(
                     modifier = Modifier
                         .size(150.dp, 109.dp)

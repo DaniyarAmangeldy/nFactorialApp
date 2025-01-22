@@ -1,7 +1,11 @@
 package kz.nfactorial.nfactorialapp.home.di
 
 import kz.nfactorial.nfactorialapp.home.data.api.HomeApiService
-import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepository
+import kz.nfactorial.nfactorialapp.home.data.dataSource.HomeRemoteDataSource
+import kz.nfactorial.nfactorialapp.home.data.dataSource.HomeRemoteDataSourceImpl
+import kz.nfactorial.nfactorialapp.home.data.mappers.HomeComponentApiToDomainMapper
+import kz.nfactorial.nfactorialapp.home.data.repository.HomeRepositoryImpl
+import kz.nfactorial.nfactorialapp.home.domain.usecases.GetHomeComponentsUseCase
 import kz.nfactorial.nfactorialapp.home.presentation.HomeViewModel
 import kz.nfactorial.nfactorialapp.home.presentation.factory.HomeStateFactory
 import org.koin.core.module.dsl.viewModel
@@ -13,15 +17,29 @@ val homeModule = module {
 
     viewModel {
         HomeViewModel(
-            homeRepository = get(),
+            homeRepositoryImpl = get(),
             profileRepository = get(),
             homeStateFactory = get(),
+            getHomeComponentsUseCase = get(),
         )
     }
 
     factory {
-        HomeRepository(
+        GetHomeComponentsUseCase(
+            homeRepository = get(),
+        )
+    }
+
+    factory {
+        HomeRepositoryImpl(
             accountProvider = get(),
+            homeRemoteDataSource = get(),
+            homeComponentApiToDomainMapper = HomeComponentApiToDomainMapper(),
+        )
+    }
+
+    factory<HomeRemoteDataSource> {
+        HomeRemoteDataSourceImpl(
             homeApiService = get(),
         )
     }
@@ -33,5 +51,4 @@ val homeModule = module {
     factory {
         get<Retrofit>().create<HomeApiService>()
     }
-
 }

@@ -1,5 +1,6 @@
 package kz.nfactorial.nfactorialapp.home.data.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -32,6 +33,7 @@ data class RatingApi(
 
 @Serializable
 data class StoreApi(
+    @SerialName("id")
     val id: String,
     val name: String,
     val image: String,

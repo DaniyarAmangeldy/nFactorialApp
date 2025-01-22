@@ -26,7 +26,7 @@
 
         <argument
             android:name="store"
-            app:argType="kz.nfactorial.nfactorialapp.home.presentation.models.Store" />
+            app:argType="kz.nfactorial.nfactorialapp.home.presentation.models.StoreUI" />
     </fragment>
 
     <fragment

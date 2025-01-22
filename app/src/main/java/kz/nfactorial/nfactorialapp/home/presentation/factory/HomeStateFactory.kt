@@ -1,17 +1,15 @@
 package kz.nfactorial.nfactorialapp.home.presentation.factory
 
-import kz.nfactorial.nfactorialapp.home.data.model.HomeComponentApi
 import kz.nfactorial.nfactorialapp.home.data.model.ProductApi
-import kz.nfactorial.nfactorialapp.home.data.model.StoreApi
+import kz.nfactorial.nfactorialapp.home.domain.entity.HomeItem
+import kz.nfactorial.nfactorialapp.home.domain.entity.Store
 import kz.nfactorial.nfactorialapp.home.presentation.HomeState
 import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
-import kz.nfactorial.nfactorialapp.home.presentation.models.Banner
 import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
-import kz.nfactorial.nfactorialapp.home.presentation.models.Collection
 import kz.nfactorial.nfactorialapp.home.presentation.models.Price
 import kz.nfactorial.nfactorialapp.home.presentation.models.Product
 import kz.nfactorial.nfactorialapp.home.presentation.models.Rating
-import kz.nfactorial.nfactorialapp.home.presentation.models.Store
+import kz.nfactorial.nfactorialapp.home.presentation.models.StoreUI
 import kz.nfactorial.nfactorialapp.registration.presentation.model.Account
 
 class HomeStateFactory {
@@ -20,30 +18,32 @@ class HomeStateFactory {
         return HomeState(
             searchField = "",
             uiData = null,
-            isAdShow = false,
+            isAdShow = true,
             selectedFilterIds = emptySet(),
             connectionLostBannerVisible = false,
         )
     }
 
-    fun createUiData(data: HomeComponentApi, account: Account?): HomeState.UiData {
+    fun createUiData(data: List<HomeItem>, account: Account?): HomeState.UiData {
+        val filters = data.find { it is HomeItem.Filters } as HomeItem.Filters
+        val stores = data.find { it is HomeItem.Collection } as HomeItem.Collection
         return HomeState.UiData(
             account = account?.toAccountInfo(),
-            banner = Banner(
-                image = data.banner.image,
-                title = data.banner.title,
-                description = data.banner.description,
-            ),
-            filters = data.filters.map {
+//            banner = Banner(
+//                image = data.banner.image,
+//                title = data.banner.title,
+//                description = data.banner.description,
+//            ),
+            filters = filters.filters.map {
                 ChipItem(
                     id = it.id.toInt(),
                     name = it.name
                 )
             },
-            collections = data.collections.map { apiModel ->
-                Collection(apiModel.name, apiModel.products.map(::mapProduct))
-            },
-            stores = data.storeCollections.flatMap { it.stores }.map(::mapStore),
+//            collections = data.collections.map { apiModel ->
+//                Collection(apiModel.name, apiModel.products.map(::mapProduct))
+//            },
+            storeUI = stores.stores.map(::mapStore),
         )
     }
 
@@ -69,16 +69,16 @@ class HomeStateFactory {
         )
     }
 
-    private fun mapStore(apiModel: StoreApi): Store {
-        return Store(
+    private fun mapStore(apiModel: Store): StoreUI {
+        return StoreUI(
             id = apiModel.id,
             name = apiModel.name,
             image = apiModel.image,
             rating = Rating(
-                average = apiModel.rating.average.toFloat(),
-                count = apiModel.rating.count,
+                average = 0f,
+                count = 0,
             ),
-            products = apiModel.products.map(::mapProduct)
+            products = emptyList(),
         )
     }
 }

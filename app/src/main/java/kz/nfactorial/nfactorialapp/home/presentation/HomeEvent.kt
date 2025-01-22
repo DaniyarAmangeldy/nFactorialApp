@@ -1,11 +1,11 @@
 package kz.nfactorial.nfactorialapp.home.presentation
 
 import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
-import kz.nfactorial.nfactorialapp.home.presentation.models.Store
+import kz.nfactorial.nfactorialapp.home.presentation.models.StoreUI
 
 sealed interface HomeEvent {
 
-    data class OnStoreClick(val store: Store) : HomeEvent
+    data class OnStoreClick(val storeUI: StoreUI) : HomeEvent
 
     data class OnSearchChanged(val text: String) : HomeEvent
 

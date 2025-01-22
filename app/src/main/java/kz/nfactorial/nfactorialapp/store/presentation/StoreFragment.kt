@@ -20,7 +20,7 @@ class StoreFragment: Fragment() {
             setContent {
                 AppTheme {
                     StoreScreen(
-                        store = args.store,
+                        storeUI = args.store,
                         onBackClick = { navController.popBackStack() }
                     )
                 }

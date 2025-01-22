@@ -20,8 +20,8 @@ class ChoosePhotoViewModel(
     private val _state = MutableStateFlow(ChoosePhotoState())
     val state = _state.asStateFlow()
 
-    private val _event = MutableSharedFlow<ChoosePhotoEffect?>()
-    val effect = _event.asSharedFlow()
+    private val _effect = MutableSharedFlow<ChoosePhotoEffect?>()
+    val effect = _effect.asSharedFlow()
 
     init {
         profileRepository
@@ -34,12 +34,12 @@ class ChoosePhotoViewModel(
         when (event) {
             is ChoosePhotoEvent.OnCameraClick -> {
                 viewModelScope.launch {
-                    _event.emit(ChoosePhotoEffect.OpenCamera())
+                    _effect.emit(ChoosePhotoEffect.OpenCamera())
                 }
             }
             is ChoosePhotoEvent.OnGalleryClick -> {
                 viewModelScope.launch {
-                    _event.emit(ChoosePhotoEffect.OpenGallery())
+                    _effect.emit(ChoosePhotoEffect.OpenGallery())
                 }
             }
             is ChoosePhotoEvent.OnPhotoSelected -> {
@@ -49,7 +49,7 @@ class ChoosePhotoViewModel(
                 val uri = _state.value.selectedPhoto ?: return
                 viewModelScope.launch(Dispatchers.IO) {
                     profileRepository.setImage(uri)
-                    _event.emit(ChoosePhotoEffect.Close(uri))
+                    _effect.emit(ChoosePhotoEffect.Close(uri))
                 }
             }
         }
