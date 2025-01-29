@@ -1,5 +1,7 @@
 package kz.nfactorial.nfactorialapp.home.presentation.factory
 
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import kz.nfactorial.nfactorialapp.home.data.model.ProductApi
 import kz.nfactorial.nfactorialapp.home.domain.entity.HomeItem
 import kz.nfactorial.nfactorialapp.home.domain.entity.Store
@@ -12,13 +14,16 @@ import kz.nfactorial.nfactorialapp.home.presentation.models.Rating
 import kz.nfactorial.nfactorialapp.home.presentation.models.StoreUI
 import kz.nfactorial.nfactorialapp.registration.presentation.model.Account
 
-class HomeStateFactory {
+class HomeStateFactory(
+    private val player: Player,
+) {
 
     fun createInitialState(): HomeState {
         return HomeState(
             searchField = "",
             uiData = null,
             isAdShow = false,
+            player = player,
             selectedFilterIds = emptySet(),
             connectionLostBannerVisible = false,
         )
@@ -44,6 +49,7 @@ class HomeStateFactory {
 //                Collection(apiModel.name, apiModel.products.map(::mapProduct))
 //            },
             storeUI = stores.stores.map(::mapStore),
+            mediaItem = MediaItem.fromUri("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
         )
     }
 

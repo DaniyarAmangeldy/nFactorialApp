@@ -162,7 +162,7 @@ fun HomeScreen(
                     )
                 }
                 item(key = "player") {
-                    VideoPlayer()
+                    VideoPlayer(state.player, uiData.mediaItem)
                 }
             }
 
@@ -303,11 +303,12 @@ private fun Header(
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
-private fun VideoPlayer() {
+private fun VideoPlayer(
+    player: Player,
+    mediaItem: MediaItem,
+) {
     val context = LocalContext.current
-    val player = remember { ExoPlayer.Builder(context).build() }
     val playerView = remember { PlayerView(context) }
-    val mediaItem = remember { MediaItem.fromUri("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
     AndroidView(
         modifier = Modifier
             .fillMaxWidth()
@@ -318,7 +319,7 @@ private fun VideoPlayer() {
             }
         }
     )
-    LaunchedEffect(Unit) {
+    LaunchedEffect(mediaItem) {
         player.setMediaItem(mediaItem)
         player.prepare()
         player.play()

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1017813716974",
+    "project_id": "nfactorialapp-516a4",
+    "storage_bucket": "nfactorialapp-516a4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017813716974:android:5940b126816970344988ff",
+        "android_client_info": {
+          "package_name": "kz.nfactorial.nfactorialapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4Frgc89n4VeeIho1Io3C5rJ1aov9BIMk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
