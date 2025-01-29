@@ -5,16 +5,17 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.google.services)
 }
 
 android {
     namespace = "kz.nfactorial.nfactorialapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "kz.nfactorial.nfactorialapp"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -78,6 +79,13 @@ dependencies {
     implementation(libs.coil.network)
     implementation(libs.koin)
     implementation(libs.workManager)
+    implementation(libs.googleMaps)
+    implementation(libs.media3.player)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.common)
+    implementation(libs.media3.session)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
     debugImplementation(libs.chucker)
     releaseImplementation(libs.chuckerNoOp)
     testImplementation(libs.junit)

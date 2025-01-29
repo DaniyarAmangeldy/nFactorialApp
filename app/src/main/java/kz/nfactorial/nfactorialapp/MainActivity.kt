@@ -108,6 +108,27 @@ class MainActivity : FragmentActivity() {
                             )
                         }
                     )
+                    NavigationBarItem(
+                        selected = selected == 2,
+                        colors = NavigationBarItemDefaults.colors(
+                            indicatorColor = Color.Transparent,
+                        ),
+                        onClick = {
+                            selected = 2
+                            navController?.navigate(R.id.mapFragment)
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.baseline_map_24),
+                                contentDescription = "map",
+                                tint = if (selected == 2) {
+                                    LocalColors.current.brand.primary
+                                } else {
+                                    LocalColors.current.icon.primary
+                                }
+                            )
+                        }
+                    )
                 }
             }
         }

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="kz.nfactorial.nfactorialapp.home.presentation.HomeXmlFragment"
+        android:name="kz.nfactorial.nfactorialapp.home.presentation.HomeFragment"
     >
         <action
             android:id="@+id/action_home_to_store"
@@ -21,6 +21,10 @@
     </fragment>
 
     <fragment
+        android:id="@+id/mapFragment"
+        android:name="kz.nfactorial.nfactorialapp.maps.MapsFragment"/>
+
+    <fragment
         android:id="@+id/store"
         android:name="kz.nfactorial.nfactorialapp.store.presentation.StoreFragment">
 
@@ -31,7 +35,7 @@
 
     <fragment
         android:id="@+id/registration"
-        android:name="kz.nfactorial.nfactorialapp.registration.presentation.RegistrationXmlFragment"/>
+        android:name="kz.nfactorial.nfactorialapp.registration.presentation.RegistrationFragment"/>
 
     <fragment
         android:id="@+id/searchFragment"

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -69,11 +70,24 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.RenderersFactory
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.session.MediaSession
+import androidx.media3.ui.PlayerControlView
+import androidx.media3.ui.PlayerView
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
 import kz.nfactorial.nfactorialapp.R
 import kz.nfactorial.nfactorialapp.databinding.ItemFilterChipBinding
+import kz.nfactorial.nfactorialapp.extensions.checkPermission
 import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
 import kz.nfactorial.nfactorialapp.home.presentation.models.Banner
 import kz.nfactorial.nfactorialapp.home.presentation.models.ChipItem
@@ -95,6 +109,9 @@ fun HomeScreen(
     val uiData = state.uiData
     val adBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isAdBottomSheetVisible by remember { mutableStateOf(false) }
+    val requestPushPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+
+    }
     val openChooseImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             onEvent(HomeEvent.OnImageUpdated)
@@ -143,6 +160,9 @@ fun HomeScreen(
                         onEvent = onEvent,
                         modifier = Modifier.padding(top = 16.dp),
                     )
+                }
+                item(key = "player") {
+                    VideoPlayer()
                 }
             }
 
@@ -216,6 +236,14 @@ fun HomeScreen(
             null -> Unit
         }
     }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!context.checkPermission(android.Manifest.permission.POST_NOTIFICATIONS)) {
+                requestPushPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
 }
 
 @Composable
@@ -270,6 +298,34 @@ private fun Header(
                 contentDescription = "profile",
             )
         }
+    }
+}
+
+@androidx.annotation.OptIn(UnstableApi::class)
+@Composable
+private fun VideoPlayer() {
+    val context = LocalContext.current
+    val player = remember { ExoPlayer.Builder(context).build() }
+    val playerView = remember { PlayerView(context) }
+    val mediaItem = remember { MediaItem.fromUri("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") }
+    AndroidView(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
+        factory = {
+            playerView.apply {
+                playerView.player = player
+            }
+        }
+    )
+    LaunchedEffect(Unit) {
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.play()
+    }
+
+    LifecycleEventEffect(event = Lifecycle.Event.ON_STOP) {
+        player.release()
     }
 }
 

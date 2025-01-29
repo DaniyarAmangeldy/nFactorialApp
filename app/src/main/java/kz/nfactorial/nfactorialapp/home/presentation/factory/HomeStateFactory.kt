@@ -18,7 +18,7 @@ class HomeStateFactory {
         return HomeState(
             searchField = "",
             uiData = null,
-            isAdShow = true,
+            isAdShow = false,
             selectedFilterIds = emptySet(),
             connectionLostBannerVisible = false,
         )

@@ -21,6 +21,7 @@
     <application
         android:name=".NFactorialAppApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -66,6 +67,19 @@
             android:name="kz.nfactorial.nfactorialapp.home.presentation.service.HomeBoundService"
             android:exported="false"
             />
+
+        <service
+            android:name=".push.MessagingService"
+            android:exported="false"
+            >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="API_KEY_HERE" />
 
     </application>
 

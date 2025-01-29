@@ -76,10 +76,10 @@ class HomeViewModel(
                 }
             }
             is HomeEvent.OnStoreClick -> {
-//                navController.navigate(HomeXmlFragmentDirections.actionHomeToStore(event.storeUI))
+                navController.navigate(HomeFragmentDirections.actionHomeToStore(event.storeUI))
             }
             is HomeEvent.OnRegistrationClick -> {
-//                navController.navigate(HomeXmlFragmentDirections.actionHomeToRegistration())
+                navController.navigate(HomeFragmentDirections.actionHomeToRegistration())
             }
         }
     }
