@@ -5,10 +5,27 @@
     app:startDestination="@id/homeFragment"
     >
 
+    <action
+        android:id="@+id/action_to_registration"
+        app:destination="@+id/registration"
+        />
+
+    <action
+        android:id="@+id/to_home"
+        app:destination="@+id/homeFragment"
+        />
+
     <fragment
         android:id="@+id/homeFragment"
         android:name="kz.nfactorial.nfactorialapp.home.presentation.HomeFragment"
     >
+        <argument
+            android:name="route"
+            app:argType="kz.nfactorial.nfactorialapp.home.presentation.HomeRoute"
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
+
         <action
             android:id="@+id/action_home_to_store"
             app:destination="@+id/store"

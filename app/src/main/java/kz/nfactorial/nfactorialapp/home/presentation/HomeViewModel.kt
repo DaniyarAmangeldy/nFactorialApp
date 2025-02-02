@@ -3,6 +3,7 @@ package kz.nfactorial.nfactorialapp.home.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.Player
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ class HomeViewModel(
     private val profileRepository: ProfileRepository,
     private val homeStateFactory: HomeStateFactory,
     private val getHomeComponentsUseCase: GetHomeComponentsUseCase,
+    private val player: Player,
 ) : ViewModel() {
 
     private val _homeState = MutableStateFlow(homeStateFactory.createInitialState())
@@ -54,6 +56,15 @@ class HomeViewModel(
                     _effect.emit(HomeEffect.OpenChooseImage())
                 }
             }
+            is HomeEvent.OnNavigateToScreen -> {
+                when (event.route) {
+                    HomeRoute.Avatar -> {
+                        viewModelScope.launch {
+                            _effect.emit(HomeEffect.OpenChooseImage())
+                        }
+                    }
+                }
+            }
             is HomeEvent.OnImageUpdated -> {
                 val uiState = _homeState.value.uiData ?: return
                 viewModelScope.launch {
@@ -71,7 +82,13 @@ class HomeViewModel(
                         .combine(profileRepository.getProfile(), ::Pair)
                         .catch { error -> Log.e(TAG, "Error during load home components: $error")}
                         .collect { (components, account) ->
-                            _homeState.update { it.copy(uiData = homeStateFactory.createUiData(components, account)) }
+                            val uiData = homeStateFactory.createUiData(components, account)
+                            _homeState.update {
+                                it.copy(uiData = uiData)
+                            }
+                            player.setMediaItem(uiData.mediaItem)
+                            player.prepare()
+                            player.play()
                         }
                 }
             }

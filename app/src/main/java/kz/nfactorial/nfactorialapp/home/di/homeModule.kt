@@ -25,6 +25,7 @@ val homeModule = module {
             profileRepository = get(),
             homeStateFactory = get(),
             getHomeComponentsUseCase = get(),
+            player = get(),
         )
     }
 
@@ -54,7 +55,7 @@ val homeModule = module {
         )
     }
 
-    factory<Player> {
+    single<Player> {
         ExoPlayer.Builder(androidContext()).build()
     }
 

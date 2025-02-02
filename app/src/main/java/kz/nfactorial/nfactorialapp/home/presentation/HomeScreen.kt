@@ -162,7 +162,7 @@ fun HomeScreen(
                     )
                 }
                 item(key = "player") {
-                    VideoPlayer(state.player, uiData.mediaItem)
+                    VideoPlayer(state.player)
                 }
             }
 
@@ -303,31 +303,16 @@ private fun Header(
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
-private fun VideoPlayer(
-    player: Player,
-    mediaItem: MediaItem,
-) {
+private fun VideoPlayer(player: Player) {
     val context = LocalContext.current
-    val playerView = remember { PlayerView(context) }
     AndroidView(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp),
         factory = {
-            playerView.apply {
-                playerView.player = player
-            }
+            PlayerView(context).apply { this.player = player }
         }
     )
-    LaunchedEffect(mediaItem) {
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.play()
-    }
-
-    LifecycleEventEffect(event = Lifecycle.Event.ON_STOP) {
-        player.release()
-    }
 }
 
 @Composable

@@ -13,6 +13,8 @@ sealed interface HomeEvent {
 
     data object OnRegistrationClick : HomeEvent
 
+    data class OnNavigateToScreen(val route: HomeRoute) : HomeEvent
+
     data object OnAdCloseClick : HomeEvent
 
     data object OnCreate : HomeEvent
