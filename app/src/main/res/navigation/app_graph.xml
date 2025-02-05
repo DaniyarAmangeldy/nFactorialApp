@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_graph"
+    app:startDestination="@id/homeFragment"
+    >
+
+    <action
+        android:id="@+id/action_to_registration"
+        app:destination="@+id/registration"
+        />
+
+    <action
+        android:id="@+id/to_home"
+        app:destination="@+id/homeFragment"
+        />
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="kz.nfactorial.nfactorialapp.home.presentation.HomeFragment"
+    >
+        <argument
+            android:name="route"
+            app:argType="kz.nfactorial.nfactorialapp.home.presentation.HomeRoute"
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
+
+        <action
+            android:id="@+id/action_home_to_store"
+            app:destination="@+id/store"
+            />
+
+        <action
+            android:id="@+id/action_home_to_registration"
+            app:destination="@+id/registration"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="kz.nfactorial.nfactorialapp.maps.MapsFragment"/>
+
+    <fragment
+        android:id="@+id/store"
+        android:name="kz.nfactorial.nfactorialapp.store.presentation.StoreFragment">
+
+        <argument
+            android:name="store"
+            app:argType="kz.nfactorial.nfactorialapp.home.presentation.models.StoreUI" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registration"
+        android:name="kz.nfactorial.nfactorialapp.registration.presentation.RegistrationFragment"/>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="kz.nfactorial.nfactorialapp.search.presentation.SearchFragment"
+        />
+
+</navigation>

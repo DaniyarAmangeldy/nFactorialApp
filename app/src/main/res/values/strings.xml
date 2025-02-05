@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">nFactorialApp</string>
+
+    <string name="home_header_good_morning">Good Morning,</string>
+    <string name="home_search_placeholder">Search products</string>
+
+    <string name="search_title">Search</string>
+
+    <string name="action_see_all">See all</string>
+
+    <string name="store_details_rating_fmt">%1$s (%2$s Reviews)</string>
+
+    <string name="update_your_profile">Update profile</string>
+    <string name="name_field_placeholder">Name</string>
+    <string name="size_field_placeholder">Size</string>
+
+    <string name="advertisement_title">Nike 50% Off</string>
+
+    <string name="choose_from_camera">Camera</string>
+    <string name="choose_from_gallery">Gallery</string>
+    <string name="submit">Submit</string>
 </resources>

@@ -61,7 +61,7 @@ val appColors = Colors(
         secondary = Color(0x36ac721a)
     ),
     element = ElementColors(
-        light = Color(0xfff2f2f6),
+        light = Color(0xffd9d9d9),
         lightAlt = Color(0xfff8f8f8),
         star = Color(0xffffc962),
         back = Color(0x1f1f1f0d),
