@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import android.util.Log
-import android.view.LayoutInflater
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -61,6 +60,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -70,23 +70,13 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DefaultHttpDataSource
-import androidx.media3.exoplayer.DefaultRenderersFactory
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.RenderersFactory
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.session.MediaSession
-import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.PlayerView
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
 import kz.nfactorial.nfactorialapp.R
-import kz.nfactorial.nfactorialapp.databinding.ItemFilterChipBinding
 import kz.nfactorial.nfactorialapp.extensions.checkPermission
 import kz.nfactorial.nfactorialapp.home.presentation.models.AccountInfo
 import kz.nfactorial.nfactorialapp.home.presentation.models.Banner
@@ -122,7 +112,8 @@ fun HomeScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .safeDrawingPadding(),
+                    .safeDrawingPadding()
+                    .testTag("home_list"),
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
                 item(key = "Header") { Header(uiData.account, onEvent) }
@@ -193,6 +184,7 @@ fun HomeScreen(
 
     if (isAdBottomSheetVisible) {
         ModalBottomSheet(
+            modifier = Modifier.testTag("ad_bottom_sheet"),
             dragHandle = null,
             sheetState = adBottomSheetState,
             contentColor = LocalColors.current.back.primary,

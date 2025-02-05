@@ -1,7 +1,8 @@
 package kz.nfactorial.nfactorialapp.registration.di
 
 import kz.nfactorial.nfactorialapp.registration.data.api.ProfileApiService
-import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
+import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepositoryImpl
+import kz.nfactorial.nfactorialapp.registration.domain.ProfileRepository
 import kz.nfactorial.nfactorialapp.registration.presentation.RegistrationViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -17,8 +18,8 @@ val profileModule = module {
         )
     }
 
-    factory {
-        ProfileRepository(
+    factory<ProfileRepository> {
+        ProfileRepositoryImpl(
             profileApiService = get(),
             accountProvider = get(),
         )

@@ -14,15 +14,16 @@ import kz.nfactorial.nfactorialapp.home.data.account.AccountProvider
 import kz.nfactorial.nfactorialapp.home.data.model.ProfileApi
 import kz.nfactorial.nfactorialapp.registration.data.api.ProfileApiService
 import kz.nfactorial.nfactorialapp.registration.data.model.ProfileRequestApi
+import kz.nfactorial.nfactorialapp.registration.domain.ProfileRepository
 import kz.nfactorial.nfactorialapp.registration.presentation.model.Account
 
-class ProfileRepository(
+class ProfileRepositoryImpl(
     private val profileApiService: ProfileApiService,
     private val accountProvider: AccountProvider,
-) {
+): ProfileRepository {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun getProfile(): Flow<Account> {
+    override fun getProfile(): Flow<Account> {
         return accountProvider.getAccount()
             .onEmpty { emit(null) }
             .take(1)
@@ -39,7 +40,7 @@ class ProfileRepository(
             .flowOn(Dispatchers.IO)
     }
 
-    suspend fun setSize(size: Int): Flow<Account> {
+    override suspend fun setSize(size: Int): Flow<Account> {
         return flow {
             val response = profileApiService
                 .updateProfile(ProfileRequestApi(size = size.toString()))
@@ -49,11 +50,11 @@ class ProfileRepository(
         }
     }
 
-    suspend fun setImage(image: Uri?) {
+    override suspend fun setImage(image: Uri?) {
         accountProvider.setImage(image)
     }
 
-    suspend fun setName(name: String): Flow<Account> {
+    override suspend fun setName(name: String): Flow<Account> {
         return flow {
             val response = profileApiService
                 .updateProfile(ProfileRequestApi(name = name))

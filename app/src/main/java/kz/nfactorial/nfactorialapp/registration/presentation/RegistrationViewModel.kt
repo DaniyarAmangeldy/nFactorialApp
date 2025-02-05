@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
+import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepositoryImpl
+import kz.nfactorial.nfactorialapp.registration.domain.ProfileRepository
 
 class RegistrationViewModel(
     private val profileRepository: ProfileRepository,

@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepository
+import kz.nfactorial.nfactorialapp.registration.data.repository.ProfileRepositoryImpl
+import kz.nfactorial.nfactorialapp.registration.domain.ProfileRepository
 
 class ChoosePhotoViewModel(
     val profileRepository: ProfileRepository,
